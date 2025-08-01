@@ -1,0 +1,413 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    Int           @id @default(autoincrement())
+  email                 String        @unique @db.VarChar(255)
+  password              String        @db.VarChar(255)
+  firstname             String        @db.VarChar(255)
+  lastname              String        @db.VarChar(255)
+  roleId                Int
+  role                  Role          @relation(fields: [roleId], references: [id])
+  phone                 String?
+  isActive              String?       @default("A")
+  isOnline              Boolean       @default(false)
+  userimg               String?
+  companyId             Int?
+  company               Company?      @relation(fields: [companyId], references: [id])
+  createdAt             DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt             DateTime      @updatedAt @db.Timestamptz(0)
+  powers                UserPower[]
+  DayReportCreatedById  DayReport[]   @relation("DayReportCreatedById")
+  DayPowerCreatedById   DayPower[]    @relation("DayPowerCreatedById")
+  DayPowerDecAcknow     DayPower[]    @relation("DayPowerDecAcknow")
+  DayPowerDisAcknow     DayPower[]    @relation("DayPowerDisAcknow")
+  DayReviseUser         DayRevise[]   @relation("DayReviseUser")
+  MonthPowerCreatedById MonthPower[]  @relation("MonthPowerCreatedById")
+  MonthPowerDecAcknow   MonthPower[]  @relation("MonthPowerDecAcknow")
+  MonthPowerDisAcknow   MonthPower[]  @relation("MonthPowerDisAcknow")
+  MonthReviseUser       MonthRevise[] @relation("MonthReviseUser")
+  WeekPowerCreatedById  WeekPower[]   @relation("WeekPowerCreatedById")
+  WeekPowerDecAcknow    WeekPower[]   @relation("WeekPowerDecAcknow")
+  WeekPowerDisAcknow    WeekPower[]   @relation("WeekPowerDisAcknow")
+  WeekReviseUser        WeekRevise[]  @relation("WeekReviseUser")
+}
+
+model Company {
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(255)
+  address  String? @db.VarChar(255)
+  phone    String? @db.VarChar(255)
+  isActive String? @default("A")
+  powers   Power[]
+  users    User[]
+}
+
+model Voltage {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(255)
+  code   String? @db.VarChar(50)
+  powers Power[]
+}
+
+model FuelType {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(255)
+  code   String? @db.VarChar(50)
+  powers Power[]
+}
+
+model Contract {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(255)
+  powers Power[]
+}
+
+model Branch {
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(255)
+  province String? @db.VarChar(255)
+  powers   Power[]
+}
+
+model Owner {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(255)
+  code   String? @db.VarChar(50)
+  powers Power[]
+}
+
+model Region {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(255)
+  code   String? @db.VarChar(50)
+  powers Power[]
+}
+
+model Power {
+  id              Int          @id @default(autoincrement())
+  companyId       Int
+  company         Company      @relation(fields: [companyId], references: [id])
+  name            String       @db.VarChar(255)
+  unit            Int
+  abbreviation    String?      @db.VarChar(255)
+  isActive        String?      @default("A")
+  address         String?      @db.VarChar(255)
+  phone           String?      @db.VarChar(255)
+  voltageId       Int?
+  voltage         Voltage?     @relation(fields: [voltageId], references: [id])
+  fuelId          Int?
+  fuel            FuelType?    @relation(fields: [fuelId], references: [id])
+  contractId      Int?
+  contract        Contract?    @relation(fields: [contractId], references: [id])
+  branchId        Int?
+  branch          Branch?      @relation(fields: [branchId], references: [id])
+  regionId        Int?
+  region          Region?      @relation(fields: [regionId], references: [id])
+  ownerId         Int?
+  owner           Owner?       @relation(fields: [ownerId], references: [id])
+  latitude        Float?       @db.DoublePrecision
+  longitude       Float?       @db.DoublePrecision
+  installCapacity Decimal?     @db.Decimal(10, 2)
+  baseEnergy      Decimal?     @db.Decimal(10, 2)
+  codDate         DateTime?    @db.Timestamptz(0)
+  powerimg        String?      @db.VarChar(255)
+  users           UserPower[]
+  dayPowers       DayPower[]
+  dayReports      DayReport[]
+  weekPowers      WeekPower[]
+  monthPowers     MonthPower[]
+}
+
+model UserPower {
+  userId  Int
+  user    User  @relation(fields: [userId], references: [id])
+  powerId Int
+  power   Power @relation(fields: [powerId], references: [id])
+
+  @@id([userId, powerId]) // composite primary key
+}
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  code        String? @db.VarChar(50)
+  description String? @db.Text
+  users       User[]
+}
+
+model DayPower {
+  id                         Int          @id @default(autoincrement())
+  powerId                    Int
+  power                      Power        @relation(fields: [powerId], references: [id])
+  powerNo                    String       @db.VarChar(50)
+  powerDate                  DateTime     @db.Timestamptz(0)
+  createdByUserId            Int
+  createdByUser              User         @relation("DayPowerCreatedById", fields: [createdByUserId], references: [id])
+  decAcknowUserId            Int?
+  decAcknowUser              User?        @relation("DayPowerDecAcknow", fields: [decAcknowUserId], references: [id])
+  decAcknow                  Boolean      @default(false)
+  disAcknowUserId            Int?
+  disAcknowUser              User?        @relation("DayPowerDisAcknow", fields: [disAcknowUserId], references: [id])
+  disAcknow                  Boolean      @default(false)
+  upstreamLevel              Decimal      @db.Decimal(10, 2)
+  downstreamLevel            Decimal      @db.Decimal(10, 2)
+  totalStorageamount         Decimal      @db.Decimal(10, 2)
+  totalStorageaverage        Decimal      @db.Decimal(10, 2)
+  activeStorageamount        Decimal      @db.Decimal(10, 2)
+  activeStorageaverage       Decimal      @db.Decimal(10, 2)
+  turbineDischargeamount     Decimal      @db.Decimal(10, 2)
+  turbineDischargeaverage    Decimal      @db.Decimal(10, 2)
+  spillwayDischargeamount    Decimal      @db.Decimal(10, 2)
+  spillwayDischargeaverage   Decimal      @db.Decimal(10, 2)
+  ecologicalDischargeamount  Decimal      @db.Decimal(10, 2)
+  ecologicalDischargeaverage Decimal      @db.Decimal(10, 2)
+  machinesAvailability       Json
+  powerOriginal              DayOriginal? @relation("PowerOriginal")
+  powerCurrent               DayCurrent?  @relation("PowerCurrent")
+  powerRevises               DayRevise[]
+  revise                     Boolean      @default(false)
+  createdAt                  DateTime     @default(now()) @db.Timestamptz(0)
+  updatedAt                  DateTime     @updatedAt @db.Timestamptz(0)
+
+  @@index([powerId, powerDate])
+}
+
+model DayOriginal {
+  id               Int      @id @default(autoincrement())
+  dayPowerId       Int      @unique
+  dayPower         DayPower @relation("PowerOriginal", fields: [dayPowerId], references: [id])
+  totalPower       Decimal  @db.Decimal(10, 2)
+  totalUnit        Int
+  remark           String?  @db.Text
+  remarks          Json
+  originalTurbines Json
+}
+
+model DayCurrent {
+  id              Int      @id @default(autoincrement())
+  dayPowerId      Int      @unique
+  dayPower        DayPower @relation("PowerCurrent", fields: [dayPowerId], references: [id])
+  totalPower      Decimal  @db.Decimal(10, 2)
+  totalUnit       Int
+  remark          String?  @db.Text
+  remarks         Json
+  currentTurbines Json
+}
+
+model DayRevise {
+  id           Int              @id @default(autoincrement())
+  dayPowerId   Int
+  dayPower     DayPower         @relation(fields: [dayPowerId], references: [id])
+  reviseUserId Int
+  reviseUser   User             @relation("DayReviseUser", fields: [reviseUserId], references: [id])
+  reviseDetail DayReviseDetail? @relation("ReviseDetail")
+  createdAt    DateTime         @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime         @updatedAt @db.Timestamptz(0)
+}
+
+model DayReviseDetail {
+  id             Int       @id @default(autoincrement())
+  dayreviseId    Int       @unique
+  dayRevise      DayRevise @relation("ReviseDetail", fields: [dayreviseId], references: [id])
+  totalPower     Decimal   @db.Decimal(10, 2)
+  totalUnit      Int
+  remark         String?   @db.Text
+  remarks        Json
+  reviseTurbines Json
+}
+
+model DayReport {
+  id                   Int             @id @default(autoincrement())
+  powerId              Int
+  power                Power           @relation(fields: [powerId], references: [id])
+  powerDate            DateTime        @db.Timestamptz(0)
+  createdByUserId      Int
+  createdByUser        User            @relation("DayReportCreatedById", fields: [createdByUserId], references: [id])
+  activeStorageamount  Decimal         @db.Decimal(10, 2)
+  activeStorageaverage Decimal         @db.Decimal(10, 2)
+  waterLevel           Decimal         @db.Decimal(10, 2)
+  dwy                  Decimal         @db.Decimal(10, 2)
+  dwf                  Decimal         @db.Decimal(10, 2)
+  dwm                  Decimal         @db.Decimal(10, 2)
+  pws                  Decimal         @db.Decimal(10, 2)
+  inflowamount         Decimal         @db.Decimal(10, 2)
+  inflowaverage        Decimal         @db.Decimal(10, 2)
+  outflowamount        Decimal         @db.Decimal(10, 2)
+  outflowaverage       Decimal         @db.Decimal(10, 2)
+  spillwayamount       Decimal         @db.Decimal(10, 2)
+  spillwayaverage      Decimal         @db.Decimal(10, 2)
+  owramount            Decimal         @db.Decimal(10, 2)
+  owraverage           Decimal         @db.Decimal(10, 2)
+  rainFall             Decimal         @db.Decimal(10, 2)
+  netEnergyOutput      Decimal         @db.Decimal(10, 2)
+  waterRate            Decimal         @db.Decimal(10, 2)
+  powerOriginal        ReportOriginal? @relation("PowerOriginal")
+  createdAt            DateTime        @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime        @updatedAt @db.Timestamptz(0)
+
+  @@index([powerId, powerDate])
+}
+
+model ReportOriginal {
+  id               Int       @id @default(autoincrement())
+  dayReportId      Int       @unique
+  dayReport        DayReport @relation("PowerOriginal", fields: [dayReportId], references: [id])
+  totalPower       Decimal   @db.Decimal(10, 2)
+  totalUnit        Int
+  remarks          Json
+  originalTurbines Json
+}
+
+model WeekPower {
+  id              Int           @id @default(autoincrement())
+  powerId         Int
+  power           Power         @relation(fields: [powerId], references: [id])
+  powerNo         String        @db.VarChar(50)
+  sYear           String        @db.VarChar(50)
+  sWeek           String        @db.VarChar(50)
+  startDate       DateTime?     @db.Timestamptz(0)
+  endDate         DateTime?     @db.Timestamptz(0)
+  createdByUserId Int
+  createdByUser   User          @relation("WeekPowerCreatedById", fields: [createdByUserId], references: [id])
+  decAcknowUserId Int?
+  decAcknowUser   User?         @relation("WeekPowerDecAcknow", fields: [decAcknowUserId], references: [id])
+  decAcknow       Boolean       @default(false)
+  disAcknowUserId Int?
+  disAcknowUser   User?         @relation("WeekPowerDisAcknow", fields: [disAcknowUserId], references: [id])
+  disAcknow       Boolean       @default(false)
+  powerOriginal   WeekOriginal? @relation("PowerOriginal")
+  powerCurrent    WeekCurrent?  @relation("PowerCurrent")
+  powerRevises    WeekRevise[]
+  revise          Boolean       @default(false)
+  createdAt       DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime      @updatedAt @db.Timestamptz(0)
+
+  @@index([powerId, sYear, sWeek])
+}
+
+model WeekOriginal {
+  id               Int       @id @default(autoincrement())
+  weekPowerId      Int       @unique
+  weekPower        WeekPower @relation("PowerOriginal", fields: [weekPowerId], references: [id])
+  totalPower       Decimal   @db.Decimal(10, 2)
+  totalDate        Int
+  remark           String?   @db.Text
+  remarks          Json
+  originalTurbines Json
+}
+
+model WeekCurrent {
+  id              Int       @id @default(autoincrement())
+  weekPowerId     Int       @unique
+  weekPower       WeekPower @relation("PowerCurrent", fields: [weekPowerId], references: [id])
+  totalPower      Decimal   @db.Decimal(10, 2)
+  totalDate       Int
+  remark          String?   @db.Text
+  remarks         Json
+  currentTurbines Json
+}
+
+model WeekRevise {
+  id           Int               @id @default(autoincrement())
+  weekPowerId  Int
+  weekPower    WeekPower         @relation(fields: [weekPowerId], references: [id])
+  reviseUserId Int
+  reviseUser   User              @relation("WeekReviseUser", fields: [reviseUserId], references: [id])
+  reviseDetail WeekReviseDetail? @relation("ReviseDetail")
+  createdAt    DateTime          @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime          @updatedAt @db.Timestamptz(0)
+}
+
+model WeekReviseDetail {
+  id             Int        @id @default(autoincrement())
+  weekreviseId   Int        @unique
+  weekRevise     WeekRevise @relation("ReviseDetail", fields: [weekreviseId], references: [id])
+  totalPower     Decimal    @db.Decimal(10, 2)
+  totalDate      Int
+  remark         String?    @db.Text
+  remarks        Json
+  reviseTurbines Json
+}
+
+model MonthPower {
+  id              Int            @id @default(autoincrement())
+  powerId         Int
+  power           Power          @relation(fields: [powerId], references: [id])
+  powerNo         String         @db.VarChar(50)
+  yearmonth       String         @db.VarChar(50)
+  sYear           String         @db.VarChar(50)
+  sMonth          String         @db.VarChar(50)
+  createdByUserId Int
+  createdByUser   User           @relation("MonthPowerCreatedById", fields: [createdByUserId], references: [id])
+  decAcknowUserId Int?
+  decAcknowUser   User?          @relation("MonthPowerDecAcknow", fields: [decAcknowUserId], references: [id])
+  decAcknow       Boolean        @default(false)
+  disAcknowUserId Int?
+  disAcknowUser   User?          @relation("MonthPowerDisAcknow", fields: [disAcknowUserId], references: [id])
+  disAcknow       Boolean        @default(false)
+  powerOriginal   MonthOriginal? @relation("PowerOriginal")
+  powerCurrent    MonthCurrent?  @relation("PowerCurrent")
+  powerRevises    MonthRevise[]
+  revise          Boolean        @default(false)
+  createdAt       DateTime       @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime       @updatedAt @db.Timestamptz(0)
+
+  @@index([powerId, sYear, sMonth])
+}
+
+model MonthOriginal {
+  id               Int        @id @default(autoincrement())
+  monthPowerId     Int        @unique
+  monthPower       MonthPower @relation("PowerOriginal", fields: [monthPowerId], references: [id])
+  totalPower       Decimal    @db.Decimal(10, 2)
+  totalDate        Int
+  remark           String?    @db.Text
+  remarks          Json
+  originalTurbines Json
+}
+
+model MonthCurrent {
+  id              Int        @id @default(autoincrement())
+  monthPowerId    Int        @unique
+  monthPower      MonthPower @relation("PowerCurrent", fields: [monthPowerId], references: [id])
+  totalPower      Decimal    @db.Decimal(10, 2)
+  totalDate       Int
+  remark          String?    @db.Text
+  remarks         Json
+  currentTurbines Json
+}
+
+model MonthRevise {
+  id           Int                @id @default(autoincrement())
+  monthPowerId Int
+  monthPower   MonthPower         @relation(fields: [monthPowerId], references: [id])
+  reviseUserId Int
+  reviseUser   User               @relation("MonthReviseUser", fields: [reviseUserId], references: [id])
+  reviseDetail MonthReviseDetail? @relation("ReviseDetail")
+  createdAt    DateTime           @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime           @updatedAt @db.Timestamptz(0)
+}
+
+model MonthReviseDetail {
+  id             Int         @id @default(autoincrement())
+  monthreviseId  Int         @unique
+  monthRevise    MonthRevise @relation("ReviseDetail", fields: [monthreviseId], references: [id])
+  totalPower     Decimal     @db.Decimal(10, 2)
+  totalDate      Int
+  remark         String?     @db.Text
+  remarks        Json
+  reviseTurbines Json
+}

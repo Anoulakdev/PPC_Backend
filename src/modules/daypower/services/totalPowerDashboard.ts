@@ -1,0 +1,141 @@
+import { PrismaService } from '../../../prisma/prisma.service';
+import * as moment from 'moment-timezone';
+import { AuthUser } from '../../../interfaces/auth-user.interface';
+import { Decimal } from '@prisma/client/runtime/library';
+
+type PowerSumData = {
+  powerOriginal?: { totalPower: Decimal | null } | null;
+  powerCurrent?: { totalPower: Decimal | null } | null;
+};
+
+export async function totalPowerDashboard(
+  prisma: PrismaService,
+  user: AuthUser,
+) {
+  const timezone = 'Asia/Vientiane';
+  const now = moment.tz(timezone);
+
+  // ช่วงเวลา
+  const startToday = now.clone().startOf('day').toDate();
+  const endToday = now.clone().endOf('day').toDate();
+
+  const startYear = now.clone().startOf('year').toDate();
+  const endYear = now.clone().endOf('day').toDate(); // นับถึงวันนี้
+
+  const startMonth = now.clone().startOf('month').toDate();
+  const endMonth = now.clone().endOf('month').toDate();
+
+  const sToday = moment(startToday).tz(timezone).format('YYYY-MM-DD');
+  const eToday = moment(endToday).tz(timezone).format('YYYY-MM-DD');
+
+  const sYear = moment(startYear).tz(timezone).format('YYYY-MM-DD');
+  const eYear = moment(endYear).tz(timezone).format('YYYY-MM-DD');
+
+  const sMonth = moment(startMonth).tz(timezone).format('YYYY-MM-DD');
+  const eMonth = moment(endMonth).tz(timezone).format('YYYY-MM-DD');
+
+  const todayStr = moment().format('DD/MM/YYYY');
+  const yearStr = moment().format('YYYY'); // แสดงปี
+  const monthStr = moment().format('MM/YYYY');
+
+  const powerFilter =
+    user.roleId === 5 || user.roleId === 6
+      ? { powerId: { in: user.powers } }
+      : {};
+
+  // ดึงข้อมูลทั้ง 3 ช่วง
+  const [todayData, yearData, monthData] = await Promise.all([
+    prisma.dayPower.findMany({
+      where: {
+        ...powerFilter,
+        decAcknow: true,
+        disAcknow: true,
+        powerDate: {
+          gte: new Date(sToday),
+          lte: new Date(eToday),
+        },
+      },
+      select: {
+        powerOriginal: {
+          select: { totalPower: true },
+        },
+        powerCurrent: {
+          select: { totalPower: true },
+        },
+      },
+    }),
+    prisma.dayPower.findMany({
+      where: {
+        ...powerFilter,
+        decAcknow: true,
+        disAcknow: true,
+        powerDate: {
+          gte: new Date(sYear),
+          lte: new Date(eYear),
+        },
+      },
+      select: {
+        powerOriginal: {
+          select: { totalPower: true },
+        },
+        powerCurrent: {
+          select: { totalPower: true },
+        },
+      },
+    }),
+    prisma.dayPower.findMany({
+      where: {
+        ...powerFilter,
+        decAcknow: true,
+        disAcknow: true,
+        powerDate: {
+          gte: new Date(sMonth),
+          lte: new Date(eMonth),
+        },
+      },
+      select: {
+        powerOriginal: {
+          select: { totalPower: true },
+        },
+        powerCurrent: {
+          select: { totalPower: true },
+        },
+      },
+    }),
+  ]);
+
+  // รวมยอดแต่ละช่วงเวลา
+  const sumTotalPower = (data: PowerSumData[]) => {
+    let totalOriginal = new Decimal(0);
+    let totalCurrent = new Decimal(0);
+
+    for (const item of data) {
+      if (item.powerOriginal?.totalPower) {
+        totalOriginal = totalOriginal.plus(item.powerOriginal.totalPower);
+      }
+      if (item.powerCurrent?.totalPower) {
+        totalCurrent = totalCurrent.plus(item.powerCurrent.totalPower);
+      }
+    }
+
+    return {
+      totalOriginal: totalOriginal.toNumber(),
+      totalCurrent: totalCurrent.toNumber(),
+    };
+  };
+
+  return {
+    today: {
+      ...sumTotalPower(todayData),
+      todayStr: todayStr,
+    },
+    month: {
+      ...sumTotalPower(monthData),
+      monthStr: monthStr,
+    },
+    year: {
+      ...sumTotalPower(yearData),
+      yearStr: yearStr,
+    },
+  };
+}

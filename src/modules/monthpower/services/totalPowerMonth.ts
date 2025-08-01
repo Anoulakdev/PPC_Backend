@@ -1,0 +1,94 @@
+import { PrismaService } from '../../../prisma/prisma.service';
+import * as moment from 'moment-timezone';
+import { Decimal } from '@prisma/client/runtime/library';
+
+type PowerSumData = {
+  powerOriginal?: { totalPower: Decimal | null } | null;
+  powerCurrent?: { totalPower: Decimal | null } | null;
+};
+
+export async function totalPowerMonth(prisma: PrismaService, powerId: number) {
+  const timezone = 'Asia/Vientiane';
+  const now = moment.tz(timezone);
+
+  const currentYear = now.format('YYYY');
+  const currentMonth = now.format('MM');
+
+  const lastMonthMoment = now.clone().subtract(1, 'month');
+  const lastMonth = lastMonthMoment.format('MM');
+  const lastMonthYear = lastMonthMoment.format('YYYY');
+
+  // label สำหรับแสดง
+  const currentMonthStr = now.format('MM/YYYY');
+  const lastMonthStr = lastMonthMoment.format('MM/YYYY');
+  const yearStr = currentYear;
+
+  const [lastMonthData, currentMonthData, yearData] = await Promise.all([
+    prisma.monthPower.findMany({
+      where: {
+        powerId: Number(powerId),
+        sYear: lastMonthYear,
+        sMonth: lastMonth,
+      },
+      select: {
+        powerOriginal: { select: { totalPower: true } },
+        powerCurrent: { select: { totalPower: true } },
+      },
+    }),
+    prisma.monthPower.findMany({
+      where: {
+        powerId: Number(powerId),
+        sYear: currentYear,
+        sMonth: currentMonth,
+      },
+      select: {
+        powerOriginal: { select: { totalPower: true } },
+        powerCurrent: { select: { totalPower: true } },
+      },
+    }),
+    prisma.monthPower.findMany({
+      where: {
+        powerId: Number(powerId),
+        sYear: currentYear,
+      },
+      select: {
+        powerOriginal: { select: { totalPower: true } },
+        powerCurrent: { select: { totalPower: true } },
+      },
+    }),
+  ]);
+
+  const sumTotalPower = (data: PowerSumData[]) => {
+    let totalOriginal = new Decimal(0);
+    let totalCurrent = new Decimal(0);
+
+    for (const item of data) {
+      if (item.powerOriginal?.totalPower) {
+        totalOriginal = totalOriginal.plus(item.powerOriginal.totalPower);
+      }
+      if (item.powerCurrent?.totalPower) {
+        totalCurrent = totalCurrent.plus(item.powerCurrent.totalPower);
+      }
+    }
+
+    return {
+      totalOriginal: totalOriginal.toNumber(),
+      totalCurrent: totalCurrent.toNumber(),
+    };
+  };
+
+  return {
+    lastMonth: {
+      ...sumTotalPower(lastMonthData),
+      lastMonthStr: lastMonthStr,
+    },
+    currentMonth: {
+      ...sumTotalPower(currentMonthData),
+      currentMonthStr: currentMonthStr,
+    },
+    year: {
+      ...sumTotalPower(yearData),
+      yearStr: yearStr,
+    },
+  };
+}

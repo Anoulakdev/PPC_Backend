@@ -1,0 +1,39 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
+import { CreateDayreportDto } from './dto/create-dayreport.dto';
+// import { UpdateDayreportDto } from './dto/update-dayreport.dto';
+import { AuthUser } from '../../interfaces/auth-user.interface';
+import { createDayReport } from './services/create';
+import { findAllDayReport } from './services/findall';
+import { findOneDayReport } from './services/findone';
+import { checkPowerDate } from './services/checkpowerdate';
+import { removeDayReport } from './services/remove';
+
+@Injectable()
+export class DayreportService {
+  constructor(private prisma: PrismaService) {}
+
+  create(user: AuthUser, createDayreportDto: CreateDayreportDto) {
+    return createDayReport(this.prisma, user, createDayreportDto);
+  }
+
+  findAll(user: AuthUser, powerId: number, startDate: string, endDate: string) {
+    return findAllDayReport(this.prisma, user, powerId, startDate, endDate);
+  }
+
+  checkPowerDate(powerId: number, powerDate: string) {
+    return checkPowerDate(this.prisma, powerId, powerDate);
+  }
+
+  findOne(id: number) {
+    return findOneDayReport(this.prisma, id);
+  }
+
+  // update(id: number, updateDayreportDto: UpdateDayreportDto) {
+  //   return `This action updates a #${id} dayreport`;
+  // }
+
+  remove(id: number) {
+    return removeDayReport(this.prisma, id);
+  }
+}
