@@ -54,7 +54,6 @@ export class PowerController {
   }
 
   @Get(':id')
-  @Roles(2)
   findOne(@Param('id') id: string) {
     return this.powerService.findOne(+id);
   }

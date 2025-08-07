@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  // Patch,
   Param,
   Delete,
   UseGuards,
@@ -50,18 +49,18 @@ export class DayreportController {
     return this.dayreportService.checkPowerDate(powerId, powerDate);
   }
 
+  @Get('waterlevel')
+  waterLevel(
+    @Query('powerId') powerId: number,
+    @Query('powerDate') powerDate: string,
+  ) {
+    return this.dayreportService.waterLevel(powerId, powerDate);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.dayreportService.findOne(+id);
   }
-
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateDayreportDto: UpdateDayreportDto,
-  // ) {
-  //   return this.dayreportService.update(+id, updateDayreportDto);
-  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -38,10 +38,10 @@ export class CreateDayreportDto {
   inflowaverage: number;
 
   @IsInt()
-  outflowamount: number;
+  tdAmount: number;
 
   @IsInt()
-  outflowaverage: number;
+  tdAverage: number;
 
   @IsInt()
   spillwayamount: number;
@@ -63,6 +63,12 @@ export class CreateDayreportDto {
 
   @IsInt()
   waterRate: number;
+
+  @IsInt()
+  totalOutflow: number;
+
+  @IsInt()
+  averageOutflow: number;
 
   @IsInt()
   totalPower: number;

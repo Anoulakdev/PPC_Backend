@@ -97,38 +97,44 @@ model Region {
 }
 
 model Power {
-  id              Int          @id @default(autoincrement())
-  companyId       Int
-  company         Company      @relation(fields: [companyId], references: [id])
-  name            String       @db.VarChar(255)
-  unit            Int
-  abbreviation    String?      @db.VarChar(255)
-  isActive        String?      @default("A")
-  address         String?      @db.VarChar(255)
-  phone           String?      @db.VarChar(255)
-  voltageId       Int?
-  voltage         Voltage?     @relation(fields: [voltageId], references: [id])
-  fuelId          Int?
-  fuel            FuelType?    @relation(fields: [fuelId], references: [id])
-  contractId      Int?
-  contract        Contract?    @relation(fields: [contractId], references: [id])
-  branchId        Int?
-  branch          Branch?      @relation(fields: [branchId], references: [id])
-  regionId        Int?
-  region          Region?      @relation(fields: [regionId], references: [id])
-  ownerId         Int?
-  owner           Owner?       @relation(fields: [ownerId], references: [id])
-  latitude        Float?       @db.DoublePrecision
-  longitude       Float?       @db.DoublePrecision
-  installCapacity Decimal?     @db.Decimal(10, 2)
-  baseEnergy      Decimal?     @db.Decimal(10, 2)
-  codDate         DateTime?    @db.Timestamptz(0)
-  powerimg        String?      @db.VarChar(255)
-  users           UserPower[]
-  dayPowers       DayPower[]
-  dayReports      DayReport[]
-  weekPowers      WeekPower[]
-  monthPowers     MonthPower[]
+  id               Int          @id @default(autoincrement())
+  companyId        Int
+  company          Company      @relation(fields: [companyId], references: [id])
+  name             String       @db.VarChar(255)
+  unit             Int
+  abbreviation     String?      @db.VarChar(255)
+  isActive         String?      @default("A")
+  address          String?      @db.VarChar(255)
+  phone            String?      @db.VarChar(255)
+  voltageId        Int?
+  voltage          Voltage?     @relation(fields: [voltageId], references: [id])
+  fuelId           Int?
+  fuel             FuelType?    @relation(fields: [fuelId], references: [id])
+  contractId       Int?
+  contract         Contract?    @relation(fields: [contractId], references: [id])
+  branchId         Int?
+  branch           Branch?      @relation(fields: [branchId], references: [id])
+  regionId         Int?
+  region           Region?      @relation(fields: [regionId], references: [id])
+  ownerId          Int?
+  owner            Owner?       @relation(fields: [ownerId], references: [id])
+  latitude         Float?       @db.DoublePrecision
+  longitude        Float?       @db.DoublePrecision
+  installCapacity  Decimal?     @db.Decimal(10, 2)
+  baseEnergy       Decimal?     @db.Decimal(10, 2)
+  fullLevel        Decimal?     @db.Decimal(10, 2)
+  deadLevel        Decimal?     @db.Decimal(10, 2)
+  totalStorageFull Decimal?     @db.Decimal(10, 2)
+  totalStorageDead Decimal?     @db.Decimal(10, 2)
+  totalActiveFull  Decimal?     @db.Decimal(10, 2)
+  totalActiveDead  Decimal?     @db.Decimal(10, 2)
+  codDate          DateTime?    @db.Timestamptz(0)
+  powerimg         String?      @db.VarChar(255)
+  users            UserPower[]
+  dayPowers        DayPower[]
+  dayReports       DayReport[]
+  weekPowers       WeekPower[]
+  monthPowers      MonthPower[]
 }
 
 model UserPower {
@@ -245,8 +251,8 @@ model DayReport {
   pws                  Decimal         @db.Decimal(10, 2)
   inflowamount         Decimal         @db.Decimal(10, 2)
   inflowaverage        Decimal         @db.Decimal(10, 2)
-  outflowamount        Decimal         @db.Decimal(10, 2)
-  outflowaverage       Decimal         @db.Decimal(10, 2)
+  tdAmount             Decimal         @db.Decimal(10, 2)
+  tdAverage            Decimal         @db.Decimal(10, 2)
   spillwayamount       Decimal         @db.Decimal(10, 2)
   spillwayaverage      Decimal         @db.Decimal(10, 2)
   owramount            Decimal         @db.Decimal(10, 2)
@@ -254,6 +260,8 @@ model DayReport {
   rainFall             Decimal         @db.Decimal(10, 2)
   netEnergyOutput      Decimal         @db.Decimal(10, 2)
   waterRate            Decimal         @db.Decimal(10, 2)
+  totalOutflow         Decimal         @db.Decimal(10, 2)
+  averageOutflow       Decimal         @db.Decimal(10, 2)
   powerOriginal        ReportOriginal? @relation("PowerOriginal")
   createdAt            DateTime        @default(now()) @db.Timestamptz(0)
   updatedAt            DateTime        @updatedAt @db.Timestamptz(0)

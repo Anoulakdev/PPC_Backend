@@ -75,6 +75,30 @@ export class CreatePowerDto {
   @IsOptional()
   baseEnergy?: number;
 
+  @IsNumber()
+  @IsOptional()
+  fullLevel?: number;
+
+  @IsNumber()
+  @IsOptional()
+  deadLevel?: number;
+
+  @IsNumber()
+  @IsOptional()
+  totalStorageFull?: number;
+
+  @IsNumber()
+  @IsOptional()
+  totalStorageDead?: number;
+
+  @IsNumber()
+  @IsOptional()
+  totalActiveFull?: number;
+
+  @IsNumber()
+  @IsOptional()
+  totalActiveDead?: number;
+
   @IsString()
   @IsOptional()
   codDate?: string;

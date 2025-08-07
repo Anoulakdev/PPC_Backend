@@ -6,6 +6,7 @@ import { AuthUser } from '../../interfaces/auth-user.interface';
 import { createDayReport } from './services/create';
 import { findAllDayReport } from './services/findall';
 import { findOneDayReport } from './services/findone';
+import { waterLevel } from './services/waterLevel';
 import { checkPowerDate } from './services/checkpowerdate';
 import { removeDayReport } from './services/remove';
 
@@ -25,13 +26,13 @@ export class DayreportService {
     return checkPowerDate(this.prisma, powerId, powerDate);
   }
 
+  waterLevel(powerId: number, powerDate: string) {
+    return waterLevel(this.prisma, powerId, powerDate);
+  }
+
   findOne(id: number) {
     return findOneDayReport(this.prisma, id);
   }
-
-  // update(id: number, updateDayreportDto: UpdateDayreportDto) {
-  //   return `This action updates a #${id} dayreport`;
-  // }
 
   remove(id: number) {
     return removeDayReport(this.prisma, id);

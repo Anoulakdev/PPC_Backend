@@ -20,7 +20,7 @@ export async function totalPowerDashboard(
   const endToday = now.clone().endOf('day').toDate();
 
   const startYear = now.clone().startOf('year').toDate();
-  const endYear = now.clone().endOf('day').toDate(); // นับถึงวันนี้
+  const endYear = now.clone().endOf('year').toDate();
 
   const startMonth = now.clone().startOf('month').toDate();
   const endMonth = now.clone().endOf('month').toDate();
@@ -35,7 +35,7 @@ export async function totalPowerDashboard(
   const eMonth = moment(endMonth).tz(timezone).format('YYYY-MM-DD');
 
   const todayStr = moment().format('DD/MM/YYYY');
-  const yearStr = moment().format('YYYY'); // แสดงปี
+  const yearStr = moment().format('YYYY');
   const monthStr = moment().format('MM/YYYY');
 
   const powerFilter =
