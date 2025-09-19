@@ -23,9 +23,7 @@ export async function monthPower(
 
   const monthpowers = await prisma.monthPower.findMany({
     where,
-    orderBy: {
-      id: 'asc',
-    },
+    orderBy: { sMonth: 'asc' },
     include: {
       createdByUser: {
         select: {

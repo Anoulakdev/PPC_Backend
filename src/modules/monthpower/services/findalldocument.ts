@@ -25,9 +25,7 @@ export async function findAllDocument(
 
   const monthpowers = await prisma.monthPower.findMany({
     where,
-    orderBy: {
-      id: 'desc',
-    },
+    orderBy: { sMonth: 'desc' },
     include: {
       createdByUser: {
         select: {

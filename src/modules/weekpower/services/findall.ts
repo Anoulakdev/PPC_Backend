@@ -29,7 +29,7 @@ export async function findAllWeekPower(
   const weekpowers = await prisma.weekPower.findMany({
     where,
     orderBy: {
-      id: 'desc',
+      sWeek: 'desc',
     },
     include: {
       createdByUser: {

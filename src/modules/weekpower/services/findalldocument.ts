@@ -25,9 +25,7 @@ export async function findAllDocument(
 
   const weekpowers = await prisma.weekPower.findMany({
     where,
-    orderBy: {
-      id: 'desc',
-    },
+    orderBy: { sWeek: 'desc' },
     include: {
       createdByUser: {
         select: {
