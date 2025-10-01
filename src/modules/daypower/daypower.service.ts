@@ -17,6 +17,7 @@ import { totalPowerDay } from './services/totalPowerDay';
 import { totalPowerAll } from './services/totalPowerAll';
 import { totalPowerDashboard } from './services/totalPowerDashboard';
 import { totalChart } from './services/totalChart';
+import { totalCharts } from './services/totalCharts';
 
 @Injectable()
 export class DaypowerService {
@@ -66,6 +67,15 @@ export class DaypowerService {
     endDate: string,
   ) {
     return totalChart(this.prisma, user, powerId, startDate, endDate);
+  }
+
+  totalCharts(
+    user: AuthUser,
+    powerId: number,
+    startDate: string,
+    endDate: string,
+  ) {
+    return totalCharts(this.prisma, user, powerId, startDate, endDate);
   }
 
   findOne(id: number) {

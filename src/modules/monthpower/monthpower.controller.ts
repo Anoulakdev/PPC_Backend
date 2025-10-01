@@ -82,6 +82,15 @@ export class MonthpowerController {
     return this.monthpowerService.totalPowerAll(req.user);
   }
 
+  @Get('/totalcharts')
+  totalCharts(
+    @Req() req: UserRequest,
+    @Query('powerId') powerId: number,
+    @Query('sYear') sYear: string,
+  ) {
+    return this.monthpowerService.totalCharts(req.user, powerId, sYear);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.monthpowerService.findOne(+id);

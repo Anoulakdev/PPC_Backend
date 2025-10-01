@@ -5,7 +5,17 @@ export async function findOneMonthRevise(prisma: PrismaService, id: number) {
   const monthReviseDetail = await prisma.monthReviseDetail.findUnique({
     where: { id },
     include: {
-      monthRevise: true,
+      monthRevise: {
+        include: {
+          monthPower: {
+            select: {
+              id: true,
+              sYear: true,
+              sMonth: true,
+            },
+          },
+        },
+      },
     },
   });
 

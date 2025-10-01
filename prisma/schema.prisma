@@ -120,14 +120,14 @@ model Power {
   owner            Owner?       @relation(fields: [ownerId], references: [id])
   latitude         Float?       @db.DoublePrecision
   longitude        Float?       @db.DoublePrecision
-  installCapacity  Decimal?     @db.Decimal(10, 2)
-  baseEnergy       Decimal?     @db.Decimal(10, 2)
-  fullLevel        Decimal?     @db.Decimal(10, 2)
-  deadLevel        Decimal?     @db.Decimal(10, 2)
-  totalStorageFull Decimal?     @db.Decimal(10, 2)
-  totalStorageDead Decimal?     @db.Decimal(10, 2)
-  totalActiveFull  Decimal?     @db.Decimal(10, 2)
-  totalActiveDead  Decimal?     @db.Decimal(10, 2)
+  installCapacity  Decimal?     @db.Decimal
+  baseEnergy       Decimal?     @db.Decimal
+  fullLevel        Decimal?     @db.Decimal
+  deadLevel        Decimal?     @db.Decimal
+  totalStorageFull Decimal?     @db.Decimal
+  totalStorageDead Decimal?     @db.Decimal
+  totalActiveFull  Decimal?     @db.Decimal
+  totalActiveDead  Decimal?     @db.Decimal
   codDate          DateTime?    @db.Timestamptz(0)
   powerimg         String?      @db.VarChar(255)
   users            UserPower[]
@@ -168,18 +168,18 @@ model DayPower {
   disAcknowUserId            Int?
   disAcknowUser              User?        @relation("DayPowerDisAcknow", fields: [disAcknowUserId], references: [id])
   disAcknow                  Boolean      @default(false)
-  upstreamLevel              Decimal      @db.Decimal(10, 2)
-  downstreamLevel            Decimal      @db.Decimal(10, 2)
-  totalStorageamount         Decimal      @db.Decimal(10, 2)
-  totalStorageaverage        Decimal      @db.Decimal(10, 2)
-  activeStorageamount        Decimal      @db.Decimal(10, 2)
-  activeStorageaverage       Decimal      @db.Decimal(10, 2)
-  turbineDischargeamount     Decimal      @db.Decimal(10, 2)
-  turbineDischargeaverage    Decimal      @db.Decimal(10, 2)
-  spillwayDischargeamount    Decimal      @db.Decimal(10, 2)
-  spillwayDischargeaverage   Decimal      @db.Decimal(10, 2)
-  ecologicalDischargeamount  Decimal      @db.Decimal(10, 2)
-  ecologicalDischargeaverage Decimal      @db.Decimal(10, 2)
+  upstreamLevel              Decimal      @db.Decimal
+  downstreamLevel            Decimal      @db.Decimal
+  totalStorageamount         Decimal      @db.Decimal
+  totalStorageaverage        Decimal      @db.Decimal
+  activeStorageamount        Decimal      @db.Decimal
+  activeStorageaverage       Decimal      @db.Decimal
+  turbineDischargeamount     Decimal      @db.Decimal
+  turbineDischargeaverage    Decimal      @db.Decimal
+  spillwayDischargeamount    Decimal      @db.Decimal
+  spillwayDischargeaverage   Decimal      @db.Decimal
+  ecologicalDischargeamount  Decimal      @db.Decimal
+  ecologicalDischargeaverage Decimal      @db.Decimal
   machinesAvailability       Json
   powerOriginal              DayOriginal? @relation("PowerOriginal")
   powerCurrent               DayCurrent?  @relation("PowerCurrent")
@@ -195,7 +195,7 @@ model DayOriginal {
   id               Int      @id @default(autoincrement())
   dayPowerId       Int      @unique
   dayPower         DayPower @relation("PowerOriginal", fields: [dayPowerId], references: [id])
-  totalPower       Decimal  @db.Decimal(10, 2)
+  totalPower       Decimal  @db.Decimal
   totalUnit        Int
   remark           String?  @db.Text
   remarks          Json
@@ -206,7 +206,7 @@ model DayCurrent {
   id              Int      @id @default(autoincrement())
   dayPowerId      Int      @unique
   dayPower        DayPower @relation("PowerCurrent", fields: [dayPowerId], references: [id])
-  totalPower      Decimal  @db.Decimal(10, 2)
+  totalPower      Decimal  @db.Decimal
   totalUnit       Int
   remark          String?  @db.Text
   remarks         Json
@@ -228,7 +228,7 @@ model DayReviseDetail {
   id             Int       @id @default(autoincrement())
   dayreviseId    Int       @unique
   dayRevise      DayRevise @relation("ReviseDetail", fields: [dayreviseId], references: [id])
-  totalPower     Decimal   @db.Decimal(10, 2)
+  totalPower     Decimal   @db.Decimal
   totalUnit      Int
   remark         String?   @db.Text
   remarks        Json
@@ -242,26 +242,26 @@ model DayReport {
   powerDate            DateTime        @db.Timestamptz(0)
   createdByUserId      Int
   createdByUser        User            @relation("DayReportCreatedById", fields: [createdByUserId], references: [id])
-  activeStorageamount  Decimal         @db.Decimal(10, 2)
-  activeStorageaverage Decimal         @db.Decimal(10, 2)
-  waterLevel           Decimal         @db.Decimal(10, 2)
-  dwy                  Decimal         @db.Decimal(10, 2)
-  dwf                  Decimal         @db.Decimal(10, 2)
-  dwm                  Decimal         @db.Decimal(10, 2)
-  pws                  Decimal         @db.Decimal(10, 2)
-  inflowamount         Decimal         @db.Decimal(10, 2)
-  inflowaverage        Decimal         @db.Decimal(10, 2)
-  tdAmount             Decimal         @db.Decimal(10, 2)
-  tdAverage            Decimal         @db.Decimal(10, 2)
-  spillwayamount       Decimal         @db.Decimal(10, 2)
-  spillwayaverage      Decimal         @db.Decimal(10, 2)
-  owramount            Decimal         @db.Decimal(10, 2)
-  owraverage           Decimal         @db.Decimal(10, 2)
-  rainFall             Decimal         @db.Decimal(10, 2)
-  netEnergyOutput      Decimal         @db.Decimal(10, 2)
-  waterRate            Decimal         @db.Decimal(10, 2)
-  totalOutflow         Decimal         @db.Decimal(10, 2)
-  averageOutflow       Decimal         @db.Decimal(10, 2)
+  activeStorageamount  Decimal         @db.Decimal
+  activeStorageaverage Decimal         @db.Decimal
+  waterLevel           Decimal         @db.Decimal
+  dwy                  Decimal         @db.Decimal
+  dwf                  Decimal         @db.Decimal
+  dwm                  Decimal         @db.Decimal
+  pws                  Decimal         @db.Decimal
+  inflowamount         Decimal         @db.Decimal
+  inflowaverage        Decimal         @db.Decimal
+  tdAmount             Decimal         @db.Decimal
+  tdAverage            Decimal         @db.Decimal
+  spillwayamount       Decimal         @db.Decimal
+  spillwayaverage      Decimal         @db.Decimal
+  owramount            Decimal         @db.Decimal
+  owraverage           Decimal         @db.Decimal
+  rainFall             Decimal         @db.Decimal
+  netEnergyOutput      Decimal         @db.Decimal
+  waterRate            Decimal         @db.Decimal
+  totalOutflow         Decimal         @db.Decimal
+  averageOutflow       Decimal         @db.Decimal
   powerOriginal        ReportOriginal? @relation("PowerOriginal")
   createdAt            DateTime        @default(now()) @db.Timestamptz(0)
   updatedAt            DateTime        @updatedAt @db.Timestamptz(0)
@@ -273,7 +273,7 @@ model ReportOriginal {
   id               Int       @id @default(autoincrement())
   dayReportId      Int       @unique
   dayReport        DayReport @relation("PowerOriginal", fields: [dayReportId], references: [id])
-  totalPower       Decimal   @db.Decimal(10, 2)
+  totalPower       Decimal   @db.Decimal
   totalUnit        Int
   remarks          Json
   originalTurbines Json
@@ -310,7 +310,7 @@ model WeekOriginal {
   id               Int       @id @default(autoincrement())
   weekPowerId      Int       @unique
   weekPower        WeekPower @relation("PowerOriginal", fields: [weekPowerId], references: [id])
-  totalPower       Decimal   @db.Decimal(10, 2)
+  totalPower       Decimal   @db.Decimal
   totalDate        Int
   remark           String?   @db.Text
   remarks          Json
@@ -321,7 +321,7 @@ model WeekCurrent {
   id              Int       @id @default(autoincrement())
   weekPowerId     Int       @unique
   weekPower       WeekPower @relation("PowerCurrent", fields: [weekPowerId], references: [id])
-  totalPower      Decimal   @db.Decimal(10, 2)
+  totalPower      Decimal   @db.Decimal
   totalDate       Int
   remark          String?   @db.Text
   remarks         Json
@@ -343,7 +343,7 @@ model WeekReviseDetail {
   id             Int        @id @default(autoincrement())
   weekreviseId   Int        @unique
   weekRevise     WeekRevise @relation("ReviseDetail", fields: [weekreviseId], references: [id])
-  totalPower     Decimal    @db.Decimal(10, 2)
+  totalPower     Decimal    @db.Decimal
   totalDate      Int
   remark         String?    @db.Text
   remarks        Json
@@ -380,7 +380,7 @@ model MonthOriginal {
   id               Int        @id @default(autoincrement())
   monthPowerId     Int        @unique
   monthPower       MonthPower @relation("PowerOriginal", fields: [monthPowerId], references: [id])
-  totalPower       Decimal    @db.Decimal(10, 2)
+  totalPower       Decimal    @db.Decimal
   totalDate        Int
   remark           String?    @db.Text
   remarks          Json
@@ -391,7 +391,7 @@ model MonthCurrent {
   id              Int        @id @default(autoincrement())
   monthPowerId    Int        @unique
   monthPower      MonthPower @relation("PowerCurrent", fields: [monthPowerId], references: [id])
-  totalPower      Decimal    @db.Decimal(10, 2)
+  totalPower      Decimal    @db.Decimal
   totalDate       Int
   remark          String?    @db.Text
   remarks         Json
@@ -413,7 +413,7 @@ model MonthReviseDetail {
   id             Int         @id @default(autoincrement())
   monthreviseId  Int         @unique
   monthRevise    MonthRevise @relation("ReviseDetail", fields: [monthreviseId], references: [id])
-  totalPower     Decimal     @db.Decimal(10, 2)
+  totalPower     Decimal     @db.Decimal
   totalDate      Int
   remark         String?     @db.Text
   remarks        Json
