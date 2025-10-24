@@ -14,35 +14,36 @@ datasource db {
 }
 
 model User {
-  id                    Int           @id @default(autoincrement())
-  email                 String        @unique @db.VarChar(255)
-  password              String        @db.VarChar(255)
-  firstname             String        @db.VarChar(255)
-  lastname              String        @db.VarChar(255)
+  id                    Int                @id @default(autoincrement())
+  email                 String             @unique @db.VarChar(255)
+  password              String             @db.VarChar(255)
+  firstname             String             @db.VarChar(255)
+  lastname              String             @db.VarChar(255)
   roleId                Int
-  role                  Role          @relation(fields: [roleId], references: [id])
+  role                  Role               @relation(fields: [roleId], references: [id])
   phone                 String?
-  isActive              String?       @default("A")
-  isOnline              Boolean       @default(false)
+  isActive              String?            @default("A")
+  isOnline              Boolean            @default(false)
   userimg               String?
   companyId             Int?
-  company               Company?      @relation(fields: [companyId], references: [id])
-  createdAt             DateTime      @default(now()) @db.Timestamptz(0)
-  updatedAt             DateTime      @updatedAt @db.Timestamptz(0)
+  company               Company?           @relation(fields: [companyId], references: [id])
+  createdAt             DateTime           @default(now()) @db.Timestamptz(0)
+  updatedAt             DateTime           @updatedAt @db.Timestamptz(0)
   powers                UserPower[]
-  DayReportCreatedById  DayReport[]   @relation("DayReportCreatedById")
-  DayPowerCreatedById   DayPower[]    @relation("DayPowerCreatedById")
-  DayPowerDecAcknow     DayPower[]    @relation("DayPowerDecAcknow")
-  DayPowerDisAcknow     DayPower[]    @relation("DayPowerDisAcknow")
-  DayReviseUser         DayRevise[]   @relation("DayReviseUser")
-  MonthPowerCreatedById MonthPower[]  @relation("MonthPowerCreatedById")
-  MonthPowerDecAcknow   MonthPower[]  @relation("MonthPowerDecAcknow")
-  MonthPowerDisAcknow   MonthPower[]  @relation("MonthPowerDisAcknow")
-  MonthReviseUser       MonthRevise[] @relation("MonthReviseUser")
-  WeekPowerCreatedById  WeekPower[]   @relation("WeekPowerCreatedById")
-  WeekPowerDecAcknow    WeekPower[]   @relation("WeekPowerDecAcknow")
-  WeekPowerDisAcknow    WeekPower[]   @relation("WeekPowerDisAcknow")
-  WeekReviseUser        WeekRevise[]  @relation("WeekReviseUser")
+  DayReportCurrentById  DayReportCurrent[] @relation("DayReportCurrent")
+  DayReportHistoryById  DayReportHistory[] @relation("DayReportHistory")
+  DayPowerCreatedById   DayPower[]         @relation("DayPowerCreatedById")
+  DayPowerDecAcknow     DayPower[]         @relation("DayPowerDecAcknow")
+  DayPowerDisAcknow     DayPower[]         @relation("DayPowerDisAcknow")
+  DayReviseUser         DayRevise[]        @relation("DayReviseUser")
+  MonthPowerCreatedById MonthPower[]       @relation("MonthPowerCreatedById")
+  MonthPowerDecAcknow   MonthPower[]       @relation("MonthPowerDecAcknow")
+  MonthPowerDisAcknow   MonthPower[]       @relation("MonthPowerDisAcknow")
+  MonthReviseUser       MonthRevise[]      @relation("MonthReviseUser")
+  WeekPowerCreatedById  WeekPower[]        @relation("WeekPowerCreatedById")
+  WeekPowerDecAcknow    WeekPower[]        @relation("WeekPowerDecAcknow")
+  WeekPowerDisAcknow    WeekPower[]        @relation("WeekPowerDisAcknow")
+  WeekReviseUser        WeekRevise[]       @relation("WeekReviseUser")
 }
 
 model Company {
@@ -236,47 +237,96 @@ model DayReviseDetail {
 }
 
 model DayReport {
-  id                   Int             @id @default(autoincrement())
-  powerId              Int
-  power                Power           @relation(fields: [powerId], references: [id])
-  powerDate            DateTime        @db.Timestamptz(0)
-  createdByUserId      Int
-  createdByUser        User            @relation("DayReportCreatedById", fields: [createdByUserId], references: [id])
-  activeStorageamount  Decimal         @db.Decimal
-  activeStorageaverage Decimal         @db.Decimal
-  waterLevel           Decimal         @db.Decimal
-  dwy                  Decimal         @db.Decimal
-  dwf                  Decimal         @db.Decimal
-  dwm                  Decimal         @db.Decimal
-  pws                  Decimal         @db.Decimal
-  inflowamount         Decimal         @db.Decimal
-  inflowaverage        Decimal         @db.Decimal
-  tdAmount             Decimal         @db.Decimal
-  tdAverage            Decimal         @db.Decimal
-  spillwayamount       Decimal         @db.Decimal
-  spillwayaverage      Decimal         @db.Decimal
-  owramount            Decimal         @db.Decimal
-  owraverage           Decimal         @db.Decimal
-  rainFall             Decimal         @db.Decimal
-  netEnergyOutput      Decimal         @db.Decimal
-  waterRate            Decimal         @db.Decimal
-  totalOutflow         Decimal         @db.Decimal
-  averageOutflow       Decimal         @db.Decimal
-  powerOriginal        ReportOriginal? @relation("PowerOriginal")
-  createdAt            DateTime        @default(now()) @db.Timestamptz(0)
-  updatedAt            DateTime        @updatedAt @db.Timestamptz(0)
+  id                Int                @id @default(autoincrement())
+  powerId           Int
+  power             Power              @relation(fields: [powerId], references: [id])
+  powerDate         DateTime           @db.Timestamptz(0)
+  dayReportCurrents DayReportCurrent[]
+  dayReportHistorys DayReportHistory[]
 
   @@index([powerId, powerDate])
 }
 
-model ReportOriginal {
-  id               Int       @id @default(autoincrement())
-  dayReportId      Int       @unique
-  dayReport        DayReport @relation("PowerOriginal", fields: [dayReportId], references: [id])
-  totalPower       Decimal   @db.Decimal
-  totalUnit        Int
-  remarks          Json
-  originalTurbines Json
+model DayReportCurrent {
+  id                   Int            @id @default(autoincrement())
+  dayReportId          Int            @unique
+  dayReport            DayReport      @relation(fields: [dayReportId], references: [id])
+  createdByUserId      Int
+  createdByUser        User           @relation("DayReportCurrent", fields: [createdByUserId], references: [id])
+  activeStorageamount  Decimal        @db.Decimal
+  activeStorageaverage Decimal        @db.Decimal
+  waterLevel           Decimal        @db.Decimal
+  dwy                  Decimal        @db.Decimal
+  dwf                  Decimal        @db.Decimal
+  dwm                  Decimal        @db.Decimal
+  pws                  Decimal        @db.Decimal
+  inflowamount         Decimal        @db.Decimal
+  inflowaverage        Decimal        @db.Decimal
+  tdAmount             Decimal        @db.Decimal
+  tdAverage            Decimal        @db.Decimal
+  spillwayamount       Decimal        @db.Decimal
+  spillwayaverage      Decimal        @db.Decimal
+  owramount            Decimal        @db.Decimal
+  owraverage           Decimal        @db.Decimal
+  rainFall             Decimal        @db.Decimal
+  netEnergyOutput      Decimal        @db.Decimal
+  waterRate            Decimal        @db.Decimal
+  totalOutflow         Decimal        @db.Decimal
+  averageOutflow       Decimal        @db.Decimal
+  powerCurrent         ReportCurrent? @relation("powerCurrent")
+  createdAt            DateTime       @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime       @updatedAt @db.Timestamptz(0)
+}
+
+model ReportCurrent {
+  id                 Int              @id @default(autoincrement())
+  dayReportCurrentId Int              @unique
+  dayReportCurrent   DayReportCurrent @relation("powerCurrent", fields: [dayReportCurrentId], references: [id])
+  totalPower         Decimal          @db.Decimal
+  totalUnit          Int
+  remarks            Json
+  originalTurbines   Json
+}
+
+model DayReportHistory {
+  id                   Int            @id @default(autoincrement())
+  dayReportId          Int
+  dayReport            DayReport      @relation(fields: [dayReportId], references: [id])
+  createdByUserId      Int
+  createdByUser        User           @relation("DayReportHistory", fields: [createdByUserId], references: [id])
+  activeStorageamount  Decimal        @db.Decimal
+  activeStorageaverage Decimal        @db.Decimal
+  waterLevel           Decimal        @db.Decimal
+  dwy                  Decimal        @db.Decimal
+  dwf                  Decimal        @db.Decimal
+  dwm                  Decimal        @db.Decimal
+  pws                  Decimal        @db.Decimal
+  inflowamount         Decimal        @db.Decimal
+  inflowaverage        Decimal        @db.Decimal
+  tdAmount             Decimal        @db.Decimal
+  tdAverage            Decimal        @db.Decimal
+  spillwayamount       Decimal        @db.Decimal
+  spillwayaverage      Decimal        @db.Decimal
+  owramount            Decimal        @db.Decimal
+  owraverage           Decimal        @db.Decimal
+  rainFall             Decimal        @db.Decimal
+  netEnergyOutput      Decimal        @db.Decimal
+  waterRate            Decimal        @db.Decimal
+  totalOutflow         Decimal        @db.Decimal
+  averageOutflow       Decimal        @db.Decimal
+  powerHistory         ReportHistory? @relation("powerHistory")
+  createdAt            DateTime       @default(now()) @db.Timestamptz(0)
+  updatedAt            DateTime       @updatedAt @db.Timestamptz(0)
+}
+
+model ReportHistory {
+  id                 Int              @id @default(autoincrement())
+  dayReportHistoryId Int              @unique
+  dayReportHistory   DayReportHistory @relation("powerHistory", fields: [dayReportHistoryId], references: [id])
+  totalPower         Decimal          @db.Decimal
+  totalUnit          Int
+  remarks            Json
+  originalTurbines   Json
 }
 
 model WeekPower {

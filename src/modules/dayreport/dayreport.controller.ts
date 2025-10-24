@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Param,
+  Put,
   Delete,
   UseGuards,
   Req,
@@ -11,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { DayreportService } from './dayreport.service';
 import { CreateDayreportDto } from './dto/create-dayreport.dto';
-// import { UpdateDayreportDto } from './dto/update-dayreport.dto';
+import { UpdateDayreportDto } from './dto/update-dayreport.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserRequest } from '../../interfaces/user-request.interface';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -60,6 +61,24 @@ export class DayreportController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.dayreportService.findOne(+id);
+  }
+
+  @Get('historyrevise/:id')
+  findRevise(@Param('id') id: string) {
+    return this.dayreportService.findRevise(+id);
+  }
+
+  @Put('revise/:id')
+  updateRevise(
+    @Param('id') id: string,
+    @Req() req: UserRequest,
+    @Body() updateDayreportDto: UpdateDayreportDto,
+  ) {
+    return this.dayreportService.updateRevise(
+      +id,
+      req.user,
+      updateDayreportDto,
+    );
   }
 
   @Delete(':id')

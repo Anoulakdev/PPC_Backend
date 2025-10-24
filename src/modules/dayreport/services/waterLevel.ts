@@ -27,14 +27,31 @@ export async function waterLevel(
         lte: end,
       },
     },
-    select: {
-      waterLevel: true,
+    include: {
+      dayReportCurrents: {
+        select: {
+          waterLevel: true,
+        },
+      },
     },
   });
 
   if (!report) {
-    return { waterLevel: 0 };
+    return {
+      id: null,
+      powerId,
+      powerDate,
+      waterLevel: '0',
+    };
   }
 
-  return report;
+  const waterLevelValue =
+    report.dayReportCurrents?.[0]?.waterLevel?.toString() ?? '0';
+
+  return {
+    id: report.id,
+    powerId: report.powerId,
+    powerDate: report.powerDate.toISOString(),
+    waterLevel: waterLevelValue,
+  };
 }

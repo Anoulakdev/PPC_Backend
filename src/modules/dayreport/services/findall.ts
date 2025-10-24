@@ -29,18 +29,10 @@ export async function findAllDayReport(
     ],
   };
 
-  const daypowers = await prisma.dayReport.findMany({
+  const dayReports = await prisma.dayReport.findMany({
     where,
-    orderBy: [{ powerDate: 'desc' }, { createdAt: 'desc' }],
+    orderBy: { powerDate: 'desc' },
     include: {
-      createdByUser: {
-        select: {
-          id: true,
-          email: true,
-          firstname: true,
-          lastname: true,
-        },
-      },
       power: {
         select: {
           id: true,
@@ -53,15 +45,37 @@ export async function findAllDayReport(
           },
         },
       },
-      powerOriginal: true,
+      dayReportCurrents: {
+        include: {
+          createdByUser: {
+            select: {
+              id: true,
+              email: true,
+              firstname: true,
+              lastname: true,
+            },
+          },
+          powerCurrent: true,
+        },
+      },
     },
   });
 
-  return daypowers.map((daypower) => {
+  // แปลงเวลาทั้งหมดให้เป็น timezone Asia/Vientiane
+  return dayReports.map((report) => {
+    const current = report.dayReportCurrents?.[0]; // มีแค่ตัวเดียว
     return {
-      ...daypower,
-      createdAt: moment(daypower.createdAt).tz('Asia/Vientiane').format(),
-      updatedAt: moment(daypower.updatedAt).tz('Asia/Vientiane').format(),
+      id: report.id,
+      powerId: report.powerId,
+      powerDate: moment(report.powerDate).tz('Asia/Vientiane').format(),
+      power: report.power,
+      dayReportCurrent: current
+        ? {
+            ...current,
+            createdAt: moment(current.createdAt).tz('Asia/Vientiane').format(),
+            updatedAt: moment(current.updatedAt).tz('Asia/Vientiane').format(),
+          }
+        : null,
     };
   });
 }
