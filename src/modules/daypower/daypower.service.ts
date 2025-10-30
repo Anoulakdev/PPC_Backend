@@ -18,6 +18,8 @@ import { totalPowerAll } from './services/totalPowerAll';
 import { totalPowerDashboard } from './services/totalPowerDashboard';
 import { totalChart } from './services/totalChart';
 import { totalCharts } from './services/totalCharts';
+import { findallNCC } from './services/findallNCC';
+import { GroupedCompanyItemsDTO } from './dto/daypower.dto';
 
 @Injectable()
 export class DaypowerService {
@@ -38,6 +40,10 @@ export class DaypowerService {
     endDate: string,
   ) {
     return findAllDocument(this.prisma, user, powerId, startDate, endDate);
+  }
+
+  findallNCC(powerDate: string): Promise<GroupedCompanyItemsDTO[]> {
+    return findallNCC(this.prisma, powerDate);
   }
 
   checkPowerDate(user: AuthUser, powerId: number, powerDate: string) {

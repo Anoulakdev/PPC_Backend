@@ -17,6 +17,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserRequest } from '../../interfaces/user-request.interface';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { GroupedCompanyItemsDTO } from './dto/daypower.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('daypowers')
@@ -55,6 +56,14 @@ export class DaypowerController {
       startDate,
       endDate,
     );
+  }
+
+  @Get('/nccget')
+  @Roles(8)
+  findallNCC(
+    @Query('powerDate') powerDate: string,
+  ): Promise<GroupedCompanyItemsDTO[]> {
+    return this.daypowerService.findallNCC(powerDate);
   }
 
   @Get('/checkpowerdate')
