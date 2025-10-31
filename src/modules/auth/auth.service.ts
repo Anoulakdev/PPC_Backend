@@ -83,8 +83,11 @@ export class AuthService {
       // companyId: user.companyId,
       // powers: user.powers.map((p) => p.power.id),
     };
+
+    const expiresIn = user.roleId === 8 ? '30h' : '1h'; // dynamic
+
     return {
-      token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(payload, { expiresIn }),
       user,
     };
   }
