@@ -13,7 +13,9 @@ export async function selectPower(prisma: PrismaService, companyId?: number) {
       name: true,
     },
     orderBy: {
-      id: 'asc',
+      company: {
+        id: 'asc',
+      },
     },
   });
 }
