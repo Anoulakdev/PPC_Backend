@@ -9,6 +9,8 @@ import {
   UseGuards,
   Req,
   Query,
+  Sse,
+  MessageEvent,
 } from '@nestjs/common';
 import { DaypowerService } from './daypower.service';
 import { CreateDaypowerDto } from './dto/create-daypower.dto';
@@ -17,7 +19,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserRequest } from '../../interfaces/user-request.interface';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { GroupedCompanyItemsDTO } from './dto/daypower.dto';
+// import { GroupedCompanyItemsDTO } from './dto/daypower.dto';
+import { Observable, interval, switchMap, map, startWith } from 'rxjs';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('daypowers')
@@ -58,12 +61,17 @@ export class DaypowerController {
     );
   }
 
-  @Get('/nccget')
+  @Sse('/nccget')
   @Roles(8)
-  findallNCC(
-    @Query('powerDate') powerDate: string,
-  ): Promise<GroupedCompanyItemsDTO[]> {
-    return this.daypowerService.findallNCC(powerDate);
+  streamNCC(@Query('powerDate') powerDate: string): Observable<MessageEvent> {
+    // ส่งข้อมูลทุก 5 วินาที (หรือเปลี่ยนได้ตามต้องการ)
+    return interval(5000).pipe(
+      startWith(0),
+      switchMap(() => this.daypowerService.findallNCC(powerDate)),
+      map((data) => ({
+        data,
+      })),
+    );
   }
 
   @Get('/checkpowerdate')
