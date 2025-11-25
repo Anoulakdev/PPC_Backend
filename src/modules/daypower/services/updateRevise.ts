@@ -3,6 +3,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { NotFoundException } from '@nestjs/common';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
 import { UpdateDaypowerDto } from '../dto/update-daypower.dto';
+import { Prisma } from '@prisma/client';
 
 export async function updateRevise(
   prisma: PrismaService,
@@ -10,7 +11,7 @@ export async function updateRevise(
   user: AuthUser,
   updateDaypowerDto: UpdateDaypowerDto,
 ) {
-  const { totalPower, totalUnit, turbinedata, remark, remarks } =
+  const { totalPower, totalUnit, machinedata, turbinedata, remark, remarks } =
     updateDaypowerDto;
 
   const daypower = await prisma.dayPower.findUnique({
@@ -26,6 +27,47 @@ export async function updateRevise(
     await tx.dayCurrent.update({
       where: { dayPowerId: id },
       data: {
+        upstreamLevel: new Prisma.Decimal(updateDaypowerDto.upstreamLevel || 0),
+        downstreamLevel: new Prisma.Decimal(
+          updateDaypowerDto.downstreamLevel || 0,
+        ),
+        totalStorageamount: new Prisma.Decimal(
+          updateDaypowerDto.totalStorageamount || 0,
+        ),
+        totalStorageaverage: new Prisma.Decimal(
+          updateDaypowerDto.totalStorageaverage || 0,
+        ),
+        activeStorageamount: new Prisma.Decimal(
+          updateDaypowerDto.activeStorageamount || 0,
+        ),
+        activeStorageaverage: new Prisma.Decimal(
+          updateDaypowerDto.activeStorageaverage || 0,
+        ),
+        turbineDischargeamount: new Prisma.Decimal(
+          updateDaypowerDto.turbineDischargeamount || 0,
+        ),
+        turbineDischargeaverage: new Prisma.Decimal(
+          updateDaypowerDto.turbineDischargeaverage || 0,
+        ),
+        spillwayDischargeamount: new Prisma.Decimal(
+          updateDaypowerDto.spillwayDischargeamount || 0,
+        ),
+        spillwayDischargeaverage: new Prisma.Decimal(
+          updateDaypowerDto.spillwayDischargeaverage || 0,
+        ),
+        ecologicalDischargeamount: new Prisma.Decimal(
+          updateDaypowerDto.ecologicalDischargeamount || 0,
+        ),
+        ecologicalDischargeaverage: new Prisma.Decimal(
+          updateDaypowerDto.ecologicalDischargeaverage || 0,
+        ),
+        totalDischargeamount: new Prisma.Decimal(
+          updateDaypowerDto.totalDischargeamount || 0,
+        ),
+        totalDischargeaverage: new Prisma.Decimal(
+          updateDaypowerDto.totalDischargeaverage || 0,
+        ),
+        machinesAvailability: machinedata as any[],
         totalPower,
         totalUnit,
         remark,
@@ -46,6 +88,47 @@ export async function updateRevise(
     await tx.dayReviseDetail.create({
       data: {
         dayreviseId: newRevise.id,
+        upstreamLevel: new Prisma.Decimal(updateDaypowerDto.upstreamLevel || 0),
+        downstreamLevel: new Prisma.Decimal(
+          updateDaypowerDto.downstreamLevel || 0,
+        ),
+        totalStorageamount: new Prisma.Decimal(
+          updateDaypowerDto.totalStorageamount || 0,
+        ),
+        totalStorageaverage: new Prisma.Decimal(
+          updateDaypowerDto.totalStorageaverage || 0,
+        ),
+        activeStorageamount: new Prisma.Decimal(
+          updateDaypowerDto.activeStorageamount || 0,
+        ),
+        activeStorageaverage: new Prisma.Decimal(
+          updateDaypowerDto.activeStorageaverage || 0,
+        ),
+        turbineDischargeamount: new Prisma.Decimal(
+          updateDaypowerDto.turbineDischargeamount || 0,
+        ),
+        turbineDischargeaverage: new Prisma.Decimal(
+          updateDaypowerDto.turbineDischargeaverage || 0,
+        ),
+        spillwayDischargeamount: new Prisma.Decimal(
+          updateDaypowerDto.spillwayDischargeamount || 0,
+        ),
+        spillwayDischargeaverage: new Prisma.Decimal(
+          updateDaypowerDto.spillwayDischargeaverage || 0,
+        ),
+        ecologicalDischargeamount: new Prisma.Decimal(
+          updateDaypowerDto.ecologicalDischargeamount || 0,
+        ),
+        ecologicalDischargeaverage: new Prisma.Decimal(
+          updateDaypowerDto.ecologicalDischargeaverage || 0,
+        ),
+        totalDischargeamount: new Prisma.Decimal(
+          updateDaypowerDto.totalDischargeamount || 0,
+        ),
+        totalDischargeaverage: new Prisma.Decimal(
+          updateDaypowerDto.totalDischargeaverage || 0,
+        ),
+        machinesAvailability: machinedata as any[],
         totalPower: Number(totalPower),
         totalUnit: Number(totalUnit),
         remark,

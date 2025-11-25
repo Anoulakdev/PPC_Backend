@@ -8,5 +8,8 @@ export async function findPower(prisma: PrismaService, powerId: number) {
     orderBy: {
       powerDate: 'desc',
     },
+    include: {
+      powerCurrent: true,
+    },
   });
 }

@@ -15,6 +15,7 @@ import { findAllDocument } from './services/findalldocument';
 import { totalPowerWeek } from './services/totalPowerWeek';
 import { totalPowerAll } from './services/totalPowerAll';
 import { totalCharts } from './services/totalCharts';
+import { totalChartWeek } from './services/totalChartWeek';
 
 @Injectable()
 export class WeekpowerService {
@@ -52,6 +53,15 @@ export class WeekpowerService {
 
   totalPowerAll(user: AuthUser) {
     return totalPowerAll(this.prisma, user);
+  }
+
+  totalChartWeek(
+    user: AuthUser,
+    powerId: number,
+    sYear: string,
+    sWeek: string,
+  ) {
+    return totalChartWeek(this.prisma, user, powerId, sYear, sWeek);
   }
 
   totalCharts(user: AuthUser, powerId: number, sYear: string) {

@@ -59,6 +59,12 @@ export class CreateDayreportDto {
   rainFall: number;
 
   @IsInt()
+  powerGeneration: number;
+
+  @IsInt()
+  netEnergyImport: number;
+
+  @IsInt()
   netEnergyOutput: number;
 
   @IsInt()

@@ -65,6 +65,12 @@ export async function createDayReport(
             owramount: new Prisma.Decimal(createDayreportDto.owramount ?? 0),
             owraverage: new Prisma.Decimal(createDayreportDto.owraverage ?? 0),
             rainFall: new Prisma.Decimal(createDayreportDto.rainFall ?? 0),
+            powerGeneration: new Prisma.Decimal(
+              createDayreportDto.powerGeneration ?? 0,
+            ),
+            netEnergyImport: new Prisma.Decimal(
+              createDayreportDto.netEnergyImport ?? 0,
+            ),
             netEnergyOutput: new Prisma.Decimal(
               createDayreportDto.netEnergyOutput ?? 0,
             ),
@@ -118,6 +124,12 @@ export async function createDayReport(
             owramount: new Prisma.Decimal(createDayreportDto.owramount ?? 0),
             owraverage: new Prisma.Decimal(createDayreportDto.owraverage ?? 0),
             rainFall: new Prisma.Decimal(createDayreportDto.rainFall ?? 0),
+            powerGeneration: new Prisma.Decimal(
+              createDayreportDto.powerGeneration ?? 0,
+            ),
+            netEnergyImport: new Prisma.Decimal(
+              createDayreportDto.netEnergyImport ?? 0,
+            ),
             netEnergyOutput: new Prisma.Decimal(
               createDayreportDto.netEnergyOutput ?? 0,
             ),

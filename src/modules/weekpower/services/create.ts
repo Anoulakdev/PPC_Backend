@@ -67,6 +67,8 @@ export async function createWeekPower(
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       createdByUserId: user.id,
+      decAcknowUserId: user.id,
+      decAcknow: true,
       powerOriginal: {
         create: {
           totalPower,

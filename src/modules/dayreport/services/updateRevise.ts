@@ -65,6 +65,12 @@ export async function updateRevise(
         owramount: new Prisma.Decimal(updateDayreportDto.owramount ?? 0),
         owraverage: new Prisma.Decimal(updateDayreportDto.owraverage ?? 0),
         rainFall: new Prisma.Decimal(updateDayreportDto.rainFall ?? 0),
+        powerGeneration: new Prisma.Decimal(
+          updateDayreportDto.powerGeneration ?? 0,
+        ),
+        netEnergyImport: new Prisma.Decimal(
+          updateDayreportDto.netEnergyImport ?? 0,
+        ),
         netEnergyOutput: new Prisma.Decimal(
           updateDayreportDto.netEnergyOutput ?? 0,
         ),
@@ -117,6 +123,12 @@ export async function updateRevise(
         owramount: new Prisma.Decimal(updateDayreportDto.owramount ?? 0),
         owraverage: new Prisma.Decimal(updateDayreportDto.owraverage ?? 0),
         rainFall: new Prisma.Decimal(updateDayreportDto.rainFall ?? 0),
+        powerGeneration: new Prisma.Decimal(
+          updateDayreportDto.powerGeneration ?? 0,
+        ),
+        netEnergyImport: new Prisma.Decimal(
+          updateDayreportDto.netEnergyImport ?? 0,
+        ),
         netEnergyOutput: new Prisma.Decimal(
           updateDayreportDto.netEnergyOutput ?? 0,
         ),

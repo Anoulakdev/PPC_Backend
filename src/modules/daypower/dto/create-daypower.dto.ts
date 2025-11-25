@@ -92,6 +92,12 @@ export class CreateDaypowerDto {
   @IsInt()
   ecologicalDischargeaverage: number;
 
+  @IsInt()
+  totalDischargeamount: number;
+
+  @IsInt()
+  totalDischargeaverage: number;
+
   @IsBoolean()
   revise: boolean;
 

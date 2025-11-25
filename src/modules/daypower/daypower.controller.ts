@@ -103,6 +103,15 @@ export class DaypowerController {
     return this.daypowerService.totalPowerDashboard(req.user);
   }
 
+  @Get('/totalchartdate')
+  totalChartDate(
+    @Req() req: UserRequest,
+    @Query('powerId') powerId: number,
+    @Query('powerDate') powerDate: string,
+  ) {
+    return this.daypowerService.totalChartDate(req.user, powerId, powerDate);
+  }
+
   @Get('/totalchart')
   totalChart(
     @Req() req: UserRequest,

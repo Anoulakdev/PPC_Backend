@@ -42,6 +42,8 @@ export async function createMonthPower(
       sMonth: `${String(sMonth).padStart(2, '0')}`,
       yearmonth: `${sYear}${String(sMonth).padStart(2, '0')}`,
       createdByUserId: user.id,
+      decAcknowUserId: user.id,
+      decAcknow: true,
       powerOriginal: {
         create: {
           totalPower,

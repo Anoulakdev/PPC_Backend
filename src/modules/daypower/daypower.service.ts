@@ -19,6 +19,7 @@ import { totalPowerDashboard } from './services/totalPowerDashboard';
 import { totalChart } from './services/totalChart';
 import { totalCharts } from './services/totalCharts';
 import { findallNCC } from './services/findallNCC';
+import { totalChartDate } from './services/totalChartDate';
 import { GroupedCompanyItemsDTO } from './dto/daypower.dto';
 
 @Injectable()
@@ -64,6 +65,10 @@ export class DaypowerService {
 
   totalPowerDashboard(user: AuthUser) {
     return totalPowerDashboard(this.prisma, user);
+  }
+
+  totalChartDate(user: AuthUser, powerId: number, powerDate: string) {
+    return totalChartDate(this.prisma, user, powerId, powerDate);
   }
 
   totalChart(

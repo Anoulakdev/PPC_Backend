@@ -82,6 +82,21 @@ export class WeekpowerController {
     return this.weekpowerService.totalPowerAll(req.user);
   }
 
+  @Get('/totalchartweek')
+  totalChartWeek(
+    @Req() req: UserRequest,
+    @Query('powerId') powerId: number,
+    @Query('sYear') sYear: string,
+    @Query('sWeek') sWeek: string,
+  ) {
+    return this.weekpowerService.totalChartWeek(
+      req.user,
+      powerId,
+      sYear,
+      sWeek,
+    );
+  }
+
   @Get('/totalcharts')
   totalCharts(
     @Req() req: UserRequest,
