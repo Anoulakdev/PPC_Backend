@@ -5,7 +5,20 @@ export async function findOneDayRevise(prisma: PrismaService, id: number) {
   const dayReviseDetail = await prisma.dayReviseDetail.findUnique({
     where: { id },
     include: {
-      dayRevise: true,
+      dayRevise: {
+        include: {
+          dayPower: {
+            select: {
+              power: {
+                select: {
+                  id: true,
+                  fuelId: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 

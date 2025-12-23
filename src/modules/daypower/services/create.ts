@@ -43,45 +43,47 @@ export async function createDayPower(
       decAcknow: true,
       powerOriginal: {
         create: {
-          upstreamLevel: new Prisma.Decimal(createDaypowerDto.upstreamLevel),
+          upstreamLevel: new Prisma.Decimal(
+            createDaypowerDto.upstreamLevel ?? 0,
+          ),
           downstreamLevel: new Prisma.Decimal(
-            createDaypowerDto.downstreamLevel,
+            createDaypowerDto.downstreamLevel ?? 0,
           ),
           totalStorageamount: new Prisma.Decimal(
-            createDaypowerDto.totalStorageamount,
+            createDaypowerDto.totalStorageamount ?? 0,
           ),
           totalStorageaverage: new Prisma.Decimal(
-            createDaypowerDto.totalStorageaverage,
+            createDaypowerDto.totalStorageaverage ?? 0,
           ),
           activeStorageamount: new Prisma.Decimal(
-            createDaypowerDto.activeStorageamount,
+            createDaypowerDto.activeStorageamount ?? 0,
           ),
           activeStorageaverage: new Prisma.Decimal(
-            createDaypowerDto.activeStorageaverage,
+            createDaypowerDto.activeStorageaverage ?? 0,
           ),
           turbineDischargeamount: new Prisma.Decimal(
-            createDaypowerDto.turbineDischargeamount,
+            createDaypowerDto.turbineDischargeamount ?? 0,
           ),
           turbineDischargeaverage: new Prisma.Decimal(
-            createDaypowerDto.turbineDischargeaverage,
+            createDaypowerDto.turbineDischargeaverage ?? 0,
           ),
           spillwayDischargeamount: new Prisma.Decimal(
-            createDaypowerDto.spillwayDischargeamount,
+            createDaypowerDto.spillwayDischargeamount ?? 0,
           ),
           spillwayDischargeaverage: new Prisma.Decimal(
-            createDaypowerDto.spillwayDischargeaverage,
+            createDaypowerDto.spillwayDischargeaverage ?? 0,
           ),
           ecologicalDischargeamount: new Prisma.Decimal(
-            createDaypowerDto.ecologicalDischargeamount,
+            createDaypowerDto.ecologicalDischargeamount ?? 0,
           ),
           ecologicalDischargeaverage: new Prisma.Decimal(
-            createDaypowerDto.ecologicalDischargeaverage,
+            createDaypowerDto.ecologicalDischargeaverage ?? 0,
           ),
           totalDischargeamount: new Prisma.Decimal(
-            createDaypowerDto.totalDischargeamount,
+            createDaypowerDto.totalDischargeamount ?? 0,
           ),
           totalDischargeaverage: new Prisma.Decimal(
-            createDaypowerDto.totalDischargeaverage,
+            createDaypowerDto.totalDischargeaverage ?? 0,
           ),
           machinesAvailability: machinedata as any[],
           totalPower,
@@ -93,45 +95,47 @@ export async function createDayPower(
       },
       powerCurrent: {
         create: {
-          upstreamLevel: new Prisma.Decimal(createDaypowerDto.upstreamLevel),
+          upstreamLevel: new Prisma.Decimal(
+            createDaypowerDto.upstreamLevel ?? 0,
+          ),
           downstreamLevel: new Prisma.Decimal(
-            createDaypowerDto.downstreamLevel,
+            createDaypowerDto.downstreamLevel ?? 0,
           ),
           totalStorageamount: new Prisma.Decimal(
-            createDaypowerDto.totalStorageamount,
+            createDaypowerDto.totalStorageamount ?? 0,
           ),
           totalStorageaverage: new Prisma.Decimal(
-            createDaypowerDto.totalStorageaverage,
+            createDaypowerDto.totalStorageaverage ?? 0,
           ),
           activeStorageamount: new Prisma.Decimal(
-            createDaypowerDto.activeStorageamount,
+            createDaypowerDto.activeStorageamount ?? 0,
           ),
           activeStorageaverage: new Prisma.Decimal(
-            createDaypowerDto.activeStorageaverage,
+            createDaypowerDto.activeStorageaverage ?? 0,
           ),
           turbineDischargeamount: new Prisma.Decimal(
-            createDaypowerDto.turbineDischargeamount,
+            createDaypowerDto.turbineDischargeamount ?? 0,
           ),
           turbineDischargeaverage: new Prisma.Decimal(
-            createDaypowerDto.turbineDischargeaverage,
+            createDaypowerDto.turbineDischargeaverage ?? 0,
           ),
           spillwayDischargeamount: new Prisma.Decimal(
-            createDaypowerDto.spillwayDischargeamount,
+            createDaypowerDto.spillwayDischargeamount ?? 0,
           ),
           spillwayDischargeaverage: new Prisma.Decimal(
-            createDaypowerDto.spillwayDischargeaverage,
+            createDaypowerDto.spillwayDischargeaverage ?? 0,
           ),
           ecologicalDischargeamount: new Prisma.Decimal(
-            createDaypowerDto.ecologicalDischargeamount,
+            createDaypowerDto.ecologicalDischargeamount ?? 0,
           ),
           ecologicalDischargeaverage: new Prisma.Decimal(
-            createDaypowerDto.ecologicalDischargeaverage,
+            createDaypowerDto.ecologicalDischargeaverage ?? 0,
           ),
           totalDischargeamount: new Prisma.Decimal(
-            createDaypowerDto.totalDischargeamount,
+            createDaypowerDto.totalDischargeamount ?? 0,
           ),
           totalDischargeaverage: new Prisma.Decimal(
-            createDaypowerDto.totalDischargeaverage,
+            createDaypowerDto.totalDischargeaverage ?? 0,
           ),
           machinesAvailability: machinedata as any[],
           totalPower,
