@@ -63,13 +63,18 @@ export class DaypowerController {
 
   @Sse('/nccget')
   @Roles(8)
-  streamNCC(@Query('powerDate') powerDate: string): Observable<MessageEvent> {
+  streamNCC(
+    @Query('powerDate') powerDate: string,
+    @Query('regionId') regionId?: string,
+  ): Observable<MessageEvent> {
+    const region = regionId ? Number(regionId) : undefined;
     // ส่งข้อมูลทุก 5 วินาที (หรือเปลี่ยนได้ตามต้องการ)
     return interval(5000).pipe(
       startWith(0),
-      switchMap(() => this.daypowerService.findallNCC(powerDate)),
+      switchMap(() => this.daypowerService.findallNCC(powerDate, region)),
       map((data) => ({
         data,
+        retry: 3000, // ถ้าหลุด reconnect ภายใน 3 วิ
       })),
     );
   }

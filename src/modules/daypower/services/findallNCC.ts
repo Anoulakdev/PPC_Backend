@@ -1,4 +1,5 @@
 import { PrismaService } from '../../../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 interface CombinedPowerCurrent {
   id: number;
@@ -43,9 +44,22 @@ interface GroupedCompanyItems {
 export async function findallNCC(
   prisma: PrismaService,
   powerDate: string,
+  regionId?: number,
 ): Promise<GroupedCompanyItems[]> {
+  const where: Prisma.DayPowerWhereInput = {
+    powerDate: new Date(powerDate),
+  };
+
+  if (regionId !== undefined && regionId !== null) {
+    where.power = {
+      is: {
+        regionId: Number(regionId),
+      },
+    };
+  }
+
   const data = await prisma.dayPower.findMany({
-    where: { powerDate: new Date(powerDate) },
+    where,
     select: {
       id: true,
       powerId: true,
@@ -78,6 +92,7 @@ export async function findallNCC(
           company: {
             select: { id: true, name: true },
           },
+          regionId: true,
         },
       },
       powerCurrent: true,

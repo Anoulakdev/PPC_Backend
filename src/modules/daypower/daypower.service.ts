@@ -43,8 +43,11 @@ export class DaypowerService {
     return findAllDocument(this.prisma, user, powerId, startDate, endDate);
   }
 
-  findallNCC(powerDate: string): Promise<GroupedCompanyItemsDTO[]> {
-    return findallNCC(this.prisma, powerDate);
+  findallNCC(
+    powerDate: string,
+    regionId?: number,
+  ): Promise<GroupedCompanyItemsDTO[]> {
+    return findallNCC(this.prisma, powerDate, regionId);
   }
 
   checkPowerDate(user: AuthUser, powerId: number, powerDate: string) {
