@@ -22,17 +22,42 @@ export async function updateRevise(
   }
 
   await prisma.$transaction(async (tx) => {
-    // ✅ อัปเดต monthCurrent
-    await tx.monthCurrent.update({
-      where: { monthPowerId: id },
-      data: {
-        totalPower,
-        totalDate,
-        remark,
-        remarks: remarks || [],
-        currentTurbines: turbinedata as any[],
-      },
-    });
+    if (user.roleId === 6) {
+      // ✅ อัปเดต monthOriginal
+      await tx.monthOriginal.update({
+        where: { monthPowerId: id },
+        data: {
+          totalPower,
+          totalDate,
+          remark,
+          remarks: remarks || [],
+          originalTurbines: turbinedata as any[],
+        },
+      });
+      // ✅ อัปเดต monthCurrent
+      await tx.monthCurrent.update({
+        where: { monthPowerId: id },
+        data: {
+          totalPower,
+          totalDate,
+          remark,
+          remarks: remarks || [],
+          currentTurbines: turbinedata as any[],
+        },
+      });
+    } else {
+      // ✅ อัปเดต monthCurrent
+      await tx.monthCurrent.update({
+        where: { monthPowerId: id },
+        data: {
+          totalPower,
+          totalDate,
+          remark,
+          remarks: remarks || [],
+          currentTurbines: turbinedata as any[],
+        },
+      });
+    }
 
     // ✅ สร้าง monthRevise
     const newRevise = await tx.monthRevise.create({
@@ -62,8 +87,10 @@ export async function updateRevise(
           revise: true,
           decAcknowUserId: user.id,
           decAcknow: true,
+          decACknowAt: new Date(),
           disAcknowUserId: null,
           disAcknow: false,
+          disAcknowAt: null,
         },
       });
     } else {
@@ -73,8 +100,10 @@ export async function updateRevise(
           revise: true,
           decAcknowUserId: null,
           decAcknow: false,
+          decACknowAt: null,
           disAcknowUserId: user.id,
           disAcknow: true,
+          disAcknowAt: new Date(),
         },
       });
     }

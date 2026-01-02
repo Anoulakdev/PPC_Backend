@@ -69,6 +69,16 @@ export async function createWeekPower(
       createdByUserId: user.id,
       decAcknowUserId: user.id,
       decAcknow: true,
+      decACknowAt: new Date(),
+      powerStart: {
+        create: {
+          totalPower,
+          totalDate,
+          remark,
+          remarks,
+          startTurbines: turbinedata as any[],
+        },
+      },
       powerOriginal: {
         create: {
           totalPower,
@@ -89,6 +99,7 @@ export async function createWeekPower(
       },
     },
     include: {
+      powerStart: true,
       powerOriginal: true,
       powerCurrent: true,
     },

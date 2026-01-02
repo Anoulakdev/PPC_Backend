@@ -39,6 +39,11 @@ export async function removeMonthPower(prisma: PrismaService, id: number) {
       where: { monthPowerId: id },
     });
 
+    // 👉 ลบ monthStart
+    await tx.monthStart.delete({
+      where: { monthPowerId: id },
+    });
+
     // 👉 ลบ monthPower
     await tx.monthPower.delete({
       where: { id },

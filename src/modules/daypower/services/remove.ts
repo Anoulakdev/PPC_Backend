@@ -39,6 +39,10 @@ export async function removeDayPower(prisma: PrismaService, id: number) {
       where: { dayPowerId: id },
     });
 
+    await tx.dayStart.delete({
+      where: { dayPowerId: id },
+    });
+
     // 👉 ลบ DayPower
     await tx.dayPower.delete({
       where: { id },

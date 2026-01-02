@@ -44,6 +44,16 @@ export async function createMonthPower(
       createdByUserId: user.id,
       decAcknowUserId: user.id,
       decAcknow: true,
+      decACknowAt: new Date(),
+      powerStart: {
+        create: {
+          totalPower,
+          totalDate,
+          remark,
+          remarks,
+          startTurbines: turbinedata as any[],
+        },
+      },
       powerOriginal: {
         create: {
           totalPower,
@@ -64,6 +74,7 @@ export async function createMonthPower(
       },
     },
     include: {
+      powerStart: true,
       powerOriginal: true,
       powerCurrent: true,
     },

@@ -39,6 +39,11 @@ export async function removeWeekPower(prisma: PrismaService, id: number) {
       where: { weekPowerId: id },
     });
 
+    // 👉 ลบ weekStart
+    await tx.weekStart.delete({
+      where: { weekPowerId: id },
+    });
+
     // 👉 ลบ weekPower
     await tx.weekPower.delete({
       where: { id },

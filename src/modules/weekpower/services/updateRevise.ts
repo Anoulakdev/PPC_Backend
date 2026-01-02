@@ -22,17 +22,43 @@ export async function updateRevise(
   }
 
   await prisma.$transaction(async (tx) => {
-    // ✅ อัปเดต weekCurrent
-    await tx.weekCurrent.update({
-      where: { weekPowerId: id },
-      data: {
-        totalPower,
-        totalDate,
-        remark,
-        remarks: remarks || [],
-        currentTurbines: turbinedata as any[],
-      },
-    });
+    if (user.roleId === 6) {
+      // ✅ อัปเดต weekOriginal
+      await tx.weekOriginal.update({
+        where: { weekPowerId: id },
+        data: {
+          totalPower,
+          totalDate,
+          remark,
+          remarks: remarks || [],
+          originalTurbines: turbinedata as any[],
+        },
+      });
+
+      // ✅ อัปเดต weekCurrent
+      await tx.weekCurrent.update({
+        where: { weekPowerId: id },
+        data: {
+          totalPower,
+          totalDate,
+          remark,
+          remarks: remarks || [],
+          currentTurbines: turbinedata as any[],
+        },
+      });
+    } else {
+      // ✅ อัปเดต weekCurrent
+      await tx.weekCurrent.update({
+        where: { weekPowerId: id },
+        data: {
+          totalPower,
+          totalDate,
+          remark,
+          remarks: remarks || [],
+          currentTurbines: turbinedata as any[],
+        },
+      });
+    }
 
     // ✅ สร้าง weekRevise
     const newRevise = await tx.weekRevise.create({
@@ -62,8 +88,10 @@ export async function updateRevise(
           revise: true,
           decAcknowUserId: user.id,
           decAcknow: true,
+          decACknowAt: new Date(),
           disAcknowUserId: null,
           disAcknow: false,
+          disAcknowAt: null,
         },
       });
     } else {
@@ -73,8 +101,10 @@ export async function updateRevise(
           revise: true,
           decAcknowUserId: null,
           decAcknow: false,
+          decACknowAt: null,
           disAcknowUserId: user.id,
           disAcknow: true,
+          disAcknowAt: new Date(),
         },
       });
     }

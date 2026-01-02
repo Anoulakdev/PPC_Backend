@@ -166,9 +166,12 @@ model DayPower {
   decAcknowUserId Int?
   decAcknowUser   User?        @relation("DayPowerDecAcknow", fields: [decAcknowUserId], references: [id])
   decAcknow       Boolean      @default(false)
+  decACknowAt     DateTime?    @db.Timestamptz(0)
   disAcknowUserId Int?
   disAcknowUser   User?        @relation("DayPowerDisAcknow", fields: [disAcknowUserId], references: [id])
   disAcknow       Boolean      @default(false)
+  disAcknowAt     DateTime?    @db.Timestamptz(0)
+  powerStart      DayStart?    @relation("PowerStart")
   powerOriginal   DayOriginal? @relation("PowerOriginal")
   powerCurrent    DayCurrent?  @relation("PowerCurrent")
   powerRevises    DayRevise[]
@@ -177,6 +180,32 @@ model DayPower {
   updatedAt       DateTime     @updatedAt @db.Timestamptz(0)
 
   @@index([powerId, powerDate])
+}
+
+model DayStart {
+  id                         Int      @id @default(autoincrement())
+  dayPowerId                 Int      @unique
+  dayPower                   DayPower @relation("PowerStart", fields: [dayPowerId], references: [id])
+  upstreamLevel              Decimal  @db.Decimal
+  downstreamLevel            Decimal  @db.Decimal
+  totalStorageamount         Decimal  @db.Decimal
+  totalStorageaverage        Decimal  @db.Decimal
+  activeStorageamount        Decimal  @db.Decimal
+  activeStorageaverage       Decimal  @db.Decimal
+  turbineDischargeamount     Decimal  @db.Decimal
+  turbineDischargeaverage    Decimal  @db.Decimal
+  spillwayDischargeamount    Decimal  @db.Decimal
+  spillwayDischargeaverage   Decimal  @db.Decimal
+  ecologicalDischargeamount  Decimal  @db.Decimal
+  ecologicalDischargeaverage Decimal  @db.Decimal
+  totalDischargeamount       Decimal  @db.Decimal
+  totalDischargeaverage      Decimal  @db.Decimal
+  machinesAvailability       Json
+  totalPower                 Decimal  @db.Decimal
+  totalUnit                  Int
+  remark                     String?  @db.Text
+  remarks                    Json
+  startTurbines              Json
 }
 
 model DayOriginal {
@@ -379,9 +408,12 @@ model WeekPower {
   decAcknowUserId Int?
   decAcknowUser   User?         @relation("WeekPowerDecAcknow", fields: [decAcknowUserId], references: [id])
   decAcknow       Boolean       @default(false)
+  decACknowAt     DateTime?     @db.Timestamptz(0)
   disAcknowUserId Int?
   disAcknowUser   User?         @relation("WeekPowerDisAcknow", fields: [disAcknowUserId], references: [id])
   disAcknow       Boolean       @default(false)
+  disAcknowAt     DateTime?     @db.Timestamptz(0)
+  powerStart      WeekStart?    @relation("PowerStart")
   powerOriginal   WeekOriginal? @relation("PowerOriginal")
   powerCurrent    WeekCurrent?  @relation("PowerCurrent")
   powerRevises    WeekRevise[]
@@ -390,6 +422,17 @@ model WeekPower {
   updatedAt       DateTime      @updatedAt @db.Timestamptz(0)
 
   @@index([powerId, sYear, sWeek])
+}
+
+model WeekStart {
+  id            Int       @id @default(autoincrement())
+  weekPowerId   Int       @unique
+  weekPower     WeekPower @relation("PowerStart", fields: [weekPowerId], references: [id])
+  totalPower    Decimal   @db.Decimal
+  totalDate     Int
+  remark        String?   @db.Text
+  remarks       Json
+  startTurbines Json
 }
 
 model WeekOriginal {
@@ -449,9 +492,12 @@ model MonthPower {
   decAcknowUserId Int?
   decAcknowUser   User?          @relation("MonthPowerDecAcknow", fields: [decAcknowUserId], references: [id])
   decAcknow       Boolean        @default(false)
+  decACknowAt     DateTime?      @db.Timestamptz(0)
   disAcknowUserId Int?
   disAcknowUser   User?          @relation("MonthPowerDisAcknow", fields: [disAcknowUserId], references: [id])
   disAcknow       Boolean        @default(false)
+  disAcknowAt     DateTime?      @db.Timestamptz(0)
+  powerStart      MonthStart?    @relation("PowerStart")
   powerOriginal   MonthOriginal? @relation("PowerOriginal")
   powerCurrent    MonthCurrent?  @relation("PowerCurrent")
   powerRevises    MonthRevise[]
@@ -460,6 +506,17 @@ model MonthPower {
   updatedAt       DateTime       @updatedAt @db.Timestamptz(0)
 
   @@index([powerId, sYear, sMonth])
+}
+
+model MonthStart {
+  id            Int        @id @default(autoincrement())
+  monthPowerId  Int        @unique
+  monthPower    MonthPower @relation("PowerStart", fields: [monthPowerId], references: [id])
+  totalPower    Decimal    @db.Decimal
+  totalDate     Int
+  remark        String?    @db.Text
+  remarks       Json
+  startTurbines Json
 }
 
 model MonthOriginal {

@@ -23,58 +23,172 @@ export async function updateRevise(
   }
 
   await prisma.$transaction(async (tx) => {
-    // ✅ อัปเดต DayCurrent
-    await tx.dayCurrent.update({
-      where: { dayPowerId: id },
-      data: {
-        upstreamLevel: new Prisma.Decimal(updateDaypowerDto.upstreamLevel || 0),
-        downstreamLevel: new Prisma.Decimal(
-          updateDaypowerDto.downstreamLevel || 0,
-        ),
-        totalStorageamount: new Prisma.Decimal(
-          updateDaypowerDto.totalStorageamount || 0,
-        ),
-        totalStorageaverage: new Prisma.Decimal(
-          updateDaypowerDto.totalStorageaverage || 0,
-        ),
-        activeStorageamount: new Prisma.Decimal(
-          updateDaypowerDto.activeStorageamount || 0,
-        ),
-        activeStorageaverage: new Prisma.Decimal(
-          updateDaypowerDto.activeStorageaverage || 0,
-        ),
-        turbineDischargeamount: new Prisma.Decimal(
-          updateDaypowerDto.turbineDischargeamount || 0,
-        ),
-        turbineDischargeaverage: new Prisma.Decimal(
-          updateDaypowerDto.turbineDischargeaverage || 0,
-        ),
-        spillwayDischargeamount: new Prisma.Decimal(
-          updateDaypowerDto.spillwayDischargeamount || 0,
-        ),
-        spillwayDischargeaverage: new Prisma.Decimal(
-          updateDaypowerDto.spillwayDischargeaverage || 0,
-        ),
-        ecologicalDischargeamount: new Prisma.Decimal(
-          updateDaypowerDto.ecologicalDischargeamount || 0,
-        ),
-        ecologicalDischargeaverage: new Prisma.Decimal(
-          updateDaypowerDto.ecologicalDischargeaverage || 0,
-        ),
-        totalDischargeamount: new Prisma.Decimal(
-          updateDaypowerDto.totalDischargeamount || 0,
-        ),
-        totalDischargeaverage: new Prisma.Decimal(
-          updateDaypowerDto.totalDischargeaverage || 0,
-        ),
-        machinesAvailability: machinedata as any[],
-        totalPower,
-        totalUnit,
-        remark,
-        remarks: remarks || [],
-        currentTurbines: turbinedata as any[],
-      },
-    });
+    if (user.roleId === 6) {
+      // ✅ อัปเดต DayOriginal
+      await tx.dayOriginal.update({
+        where: { dayPowerId: id },
+        data: {
+          upstreamLevel: new Prisma.Decimal(
+            updateDaypowerDto.upstreamLevel || 0,
+          ),
+          downstreamLevel: new Prisma.Decimal(
+            updateDaypowerDto.downstreamLevel || 0,
+          ),
+          totalStorageamount: new Prisma.Decimal(
+            updateDaypowerDto.totalStorageamount || 0,
+          ),
+          totalStorageaverage: new Prisma.Decimal(
+            updateDaypowerDto.totalStorageaverage || 0,
+          ),
+          activeStorageamount: new Prisma.Decimal(
+            updateDaypowerDto.activeStorageamount || 0,
+          ),
+          activeStorageaverage: new Prisma.Decimal(
+            updateDaypowerDto.activeStorageaverage || 0,
+          ),
+          turbineDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.turbineDischargeamount || 0,
+          ),
+          turbineDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.turbineDischargeaverage || 0,
+          ),
+          spillwayDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.spillwayDischargeamount || 0,
+          ),
+          spillwayDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.spillwayDischargeaverage || 0,
+          ),
+          ecologicalDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.ecologicalDischargeamount || 0,
+          ),
+          ecologicalDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.ecologicalDischargeaverage || 0,
+          ),
+          totalDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.totalDischargeamount || 0,
+          ),
+          totalDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.totalDischargeaverage || 0,
+          ),
+          machinesAvailability: machinedata as any[],
+          totalPower,
+          totalUnit,
+          remark,
+          remarks: remarks || [],
+          originalTurbines: turbinedata as any[],
+        },
+      });
+
+      // ✅ อัปเดต DayCurrent
+      await tx.dayCurrent.update({
+        where: { dayPowerId: id },
+        data: {
+          upstreamLevel: new Prisma.Decimal(
+            updateDaypowerDto.upstreamLevel || 0,
+          ),
+          downstreamLevel: new Prisma.Decimal(
+            updateDaypowerDto.downstreamLevel || 0,
+          ),
+          totalStorageamount: new Prisma.Decimal(
+            updateDaypowerDto.totalStorageamount || 0,
+          ),
+          totalStorageaverage: new Prisma.Decimal(
+            updateDaypowerDto.totalStorageaverage || 0,
+          ),
+          activeStorageamount: new Prisma.Decimal(
+            updateDaypowerDto.activeStorageamount || 0,
+          ),
+          activeStorageaverage: new Prisma.Decimal(
+            updateDaypowerDto.activeStorageaverage || 0,
+          ),
+          turbineDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.turbineDischargeamount || 0,
+          ),
+          turbineDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.turbineDischargeaverage || 0,
+          ),
+          spillwayDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.spillwayDischargeamount || 0,
+          ),
+          spillwayDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.spillwayDischargeaverage || 0,
+          ),
+          ecologicalDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.ecologicalDischargeamount || 0,
+          ),
+          ecologicalDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.ecologicalDischargeaverage || 0,
+          ),
+          totalDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.totalDischargeamount || 0,
+          ),
+          totalDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.totalDischargeaverage || 0,
+          ),
+          machinesAvailability: machinedata as any[],
+          totalPower,
+          totalUnit,
+          remark,
+          remarks: remarks || [],
+          currentTurbines: turbinedata as any[],
+        },
+      });
+    } else {
+      // ✅ อัปเดต DayCurrent
+      await tx.dayCurrent.update({
+        where: { dayPowerId: id },
+        data: {
+          upstreamLevel: new Prisma.Decimal(
+            updateDaypowerDto.upstreamLevel || 0,
+          ),
+          downstreamLevel: new Prisma.Decimal(
+            updateDaypowerDto.downstreamLevel || 0,
+          ),
+          totalStorageamount: new Prisma.Decimal(
+            updateDaypowerDto.totalStorageamount || 0,
+          ),
+          totalStorageaverage: new Prisma.Decimal(
+            updateDaypowerDto.totalStorageaverage || 0,
+          ),
+          activeStorageamount: new Prisma.Decimal(
+            updateDaypowerDto.activeStorageamount || 0,
+          ),
+          activeStorageaverage: new Prisma.Decimal(
+            updateDaypowerDto.activeStorageaverage || 0,
+          ),
+          turbineDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.turbineDischargeamount || 0,
+          ),
+          turbineDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.turbineDischargeaverage || 0,
+          ),
+          spillwayDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.spillwayDischargeamount || 0,
+          ),
+          spillwayDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.spillwayDischargeaverage || 0,
+          ),
+          ecologicalDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.ecologicalDischargeamount || 0,
+          ),
+          ecologicalDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.ecologicalDischargeaverage || 0,
+          ),
+          totalDischargeamount: new Prisma.Decimal(
+            updateDaypowerDto.totalDischargeamount || 0,
+          ),
+          totalDischargeaverage: new Prisma.Decimal(
+            updateDaypowerDto.totalDischargeaverage || 0,
+          ),
+          machinesAvailability: machinedata as any[],
+          totalPower,
+          totalUnit,
+          remark,
+          remarks: remarks || [],
+          currentTurbines: turbinedata as any[],
+        },
+      });
+    }
 
     // ✅ สร้าง DayRevise
     const newRevise = await tx.dayRevise.create({
@@ -145,8 +259,10 @@ export async function updateRevise(
           revise: true,
           decAcknowUserId: user.id,
           decAcknow: true,
+          decACknowAt: new Date(),
           disAcknowUserId: null,
           disAcknow: false,
+          disAcknowAt: null,
         },
       });
     } else {
@@ -156,8 +272,10 @@ export async function updateRevise(
           revise: true,
           decAcknowUserId: null,
           decAcknow: false,
+          decACknowAt: null,
           disAcknowUserId: user.id,
           disAcknow: true,
+          disAcknowAt: new Date(),
         },
       });
     }
