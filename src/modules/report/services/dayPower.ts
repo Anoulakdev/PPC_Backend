@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
@@ -65,50 +66,61 @@ export async function dayPower(
           },
         },
       },
-      powerOriginal: {
-        select: {
-          totalPower: true,
-          upstreamLevel: true,
-          downstreamLevel: true,
-          totalStorageamount: true,
-          totalStorageaverage: true,
-          activeStorageamount: true,
-          activeStorageaverage: true,
-          turbineDischargeamount: true,
-          turbineDischargeaverage: true,
-          spillwayDischargeamount: true,
-          spillwayDischargeaverage: true,
-          ecologicalDischargeamount: true,
-          ecologicalDischargeaverage: true,
-          totalDischargeamount: true,
-          totalDischargeaverage: true,
-        },
-      },
-      powerCurrent: {
-        select: {
-          totalPower: true,
-          upstreamLevel: true,
-          downstreamLevel: true,
-          totalStorageamount: true,
-          totalStorageaverage: true,
-          activeStorageamount: true,
-          activeStorageaverage: true,
-          turbineDischargeamount: true,
-          turbineDischargeaverage: true,
-          spillwayDischargeamount: true,
-          spillwayDischargeaverage: true,
-          ecologicalDischargeamount: true,
-          ecologicalDischargeaverage: true,
-          totalDischargeamount: true,
-          totalDischargeaverage: true,
-        },
-      },
+      powerOriginal: true,
+      powerCurrent: true,
+      // powerOriginal: {
+      //   select: {
+      //     totalPower: true,
+      //     upstreamLevel: true,
+      //     downstreamLevel: true,
+      //     totalStorageamount: true,
+      //     totalStorageaverage: true,
+      //     activeStorageamount: true,
+      //     activeStorageaverage: true,
+      //     turbineDischargeamount: true,
+      //     turbineDischargeaverage: true,
+      //     spillwayDischargeamount: true,
+      //     spillwayDischargeaverage: true,
+      //     ecologicalDischargeamount: true,
+      //     ecologicalDischargeaverage: true,
+      //     totalDischargeamount: true,
+      //     totalDischargeaverage: true,
+      //   },
+      // },
+      // powerCurrent: {
+      //   select: {
+      //     totalPower: true,
+      //     upstreamLevel: true,
+      //     downstreamLevel: true,
+      //     totalStorageamount: true,
+      //     totalStorageaverage: true,
+      //     activeStorageamount: true,
+      //     activeStorageaverage: true,
+      //     turbineDischargeamount: true,
+      //     turbineDischargeaverage: true,
+      //     spillwayDischargeamount: true,
+      //     spillwayDischargeaverage: true,
+      //     ecologicalDischargeamount: true,
+      //     ecologicalDischargeaverage: true,
+      //     totalDischargeamount: true,
+      //     totalDischargeaverage: true,
+      //   },
+      // },
     },
   });
 
   return daypowers.map((daypower) => {
     return {
       ...daypower,
+      decAcknowAt: daypower.decAcknowAt
+        ? moment(daypower.decAcknowAt).tz('Asia/Vientiane').format()
+        : null,
+      disAcknowAt: daypower.disAcknowAt
+        ? moment(daypower.disAcknowAt).tz('Asia/Vientiane').format()
+        : null,
+      powerDate: moment(daypower.powerDate)
+        .tz('Asia/Vientiane')
+        .format('YYYY-MM-DD'),
       createdAt: moment(daypower.createdAt).tz('Asia/Vientiane').format(),
       updatedAt: moment(daypower.updatedAt).tz('Asia/Vientiane').format(),
     };

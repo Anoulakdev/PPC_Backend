@@ -19,7 +19,7 @@ export async function updateAcknowleged(
   const updated = await prisma.weekPower.update({
     where: { id },
     data: isDec
-      ? { decAcknowUserId: user.id, decAcknow: true, decACknowAt: new Date() }
+      ? { decAcknowUserId: user.id, decAcknow: true, decAcknowAt: new Date() }
       : { disAcknowUserId: user.id, disAcknow: true, disAcknowAt: new Date() },
   });
 

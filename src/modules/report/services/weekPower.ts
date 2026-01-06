@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
@@ -61,22 +62,30 @@ export async function weekPower(
           },
         },
       },
-      powerOriginal: {
-        select: {
-          totalPower: true,
-        },
-      },
-      powerCurrent: {
-        select: {
-          totalPower: true,
-        },
-      },
+      powerOriginal: true,
+      powerCurrent: true,
+      // powerOriginal: {
+      //   select: {
+      //     totalPower: true,
+      //   },
+      // },
+      // powerCurrent: {
+      //   select: {
+      //     totalPower: true,
+      //   },
+      // },
     },
   });
 
   return weekpowers.map((weekpower) => {
     return {
       ...weekpower,
+      decAcknowAt: weekpower.decAcknowAt
+        ? moment(weekpower.decAcknowAt).tz('Asia/Vientiane').format()
+        : null,
+      disAcknowAt: weekpower.disAcknowAt
+        ? moment(weekpower.disAcknowAt).tz('Asia/Vientiane').format()
+        : null,
       createdAt: moment(weekpower.createdAt).tz('Asia/Vientiane').format(),
       updatedAt: moment(weekpower.updatedAt).tz('Asia/Vientiane').format(),
     };

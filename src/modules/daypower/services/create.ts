@@ -41,7 +41,7 @@ export async function createDayPower(
       createdByUserId: user.id,
       decAcknowUserId: user.id,
       decAcknow: true,
-      decACknowAt: new Date(),
+      decAcknowAt: new Date(),
       powerStart: {
         create: {
           upstreamLevel: new Prisma.Decimal(

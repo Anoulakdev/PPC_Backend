@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
@@ -61,22 +62,30 @@ export async function monthPower(
           },
         },
       },
-      powerOriginal: {
-        select: {
-          totalPower: true,
-        },
-      },
-      powerCurrent: {
-        select: {
-          totalPower: true,
-        },
-      },
+      powerOriginal: true,
+      powerCurrent: true,
+      // powerOriginal: {
+      //   select: {
+      //     totalPower: true,
+      //   },
+      // },
+      // powerCurrent: {
+      //   select: {
+      //     totalPower: true,
+      //   },
+      // },
     },
   });
 
   return monthpowers.map((monthpower) => {
     return {
       ...monthpower,
+      decAcknowAt: monthpower.decAcknowAt
+        ? moment(monthpower.decAcknowAt).tz('Asia/Vientiane').format()
+        : null,
+      disAcknowAt: monthpower.disAcknowAt
+        ? moment(monthpower.disAcknowAt).tz('Asia/Vientiane').format()
+        : null,
       createdAt: moment(monthpower.createdAt).tz('Asia/Vientiane').format(),
       updatedAt: moment(monthpower.updatedAt).tz('Asia/Vientiane').format(),
     };

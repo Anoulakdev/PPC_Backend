@@ -166,7 +166,7 @@ model DayPower {
   decAcknowUserId Int?
   decAcknowUser   User?        @relation("DayPowerDecAcknow", fields: [decAcknowUserId], references: [id])
   decAcknow       Boolean      @default(false)
-  decACknowAt     DateTime?    @db.Timestamptz(0)
+  decAcknowAt     DateTime?    @db.Timestamptz(0)
   disAcknowUserId Int?
   disAcknowUser   User?        @relation("DayPowerDisAcknow", fields: [disAcknowUserId], references: [id])
   disAcknow       Boolean      @default(false)
@@ -408,7 +408,7 @@ model WeekPower {
   decAcknowUserId Int?
   decAcknowUser   User?         @relation("WeekPowerDecAcknow", fields: [decAcknowUserId], references: [id])
   decAcknow       Boolean       @default(false)
-  decACknowAt     DateTime?     @db.Timestamptz(0)
+  decAcknowAt     DateTime?     @db.Timestamptz(0)
   disAcknowUserId Int?
   disAcknowUser   User?         @relation("WeekPowerDisAcknow", fields: [disAcknowUserId], references: [id])
   disAcknow       Boolean       @default(false)
@@ -492,7 +492,7 @@ model MonthPower {
   decAcknowUserId Int?
   decAcknowUser   User?          @relation("MonthPowerDecAcknow", fields: [decAcknowUserId], references: [id])
   decAcknow       Boolean        @default(false)
-  decACknowAt     DateTime?      @db.Timestamptz(0)
+  decAcknowAt     DateTime?      @db.Timestamptz(0)
   disAcknowUserId Int?
   disAcknowUser   User?          @relation("MonthPowerDisAcknow", fields: [disAcknowUserId], references: [id])
   disAcknow       Boolean        @default(false)
