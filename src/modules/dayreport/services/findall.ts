@@ -58,12 +58,30 @@ export async function findAllDayReport(
           powerCurrent: true,
         },
       },
+      dayReportHistorys: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 1,
+        include: {
+          createdByUser: {
+            select: {
+              id: true,
+              email: true,
+              firstname: true,
+              lastname: true,
+            },
+          },
+          powerHistory: true,
+        },
+      },
     },
   });
 
   // แปลงเวลาทั้งหมดให้เป็น timezone Asia/Vientiane
   return dayReports.map((report) => {
     const current = report.dayReportCurrents?.[0]; // มีแค่ตัวเดียว
+    const latestHistory = report.dayReportHistorys?.[0] ?? null;
     return {
       id: report.id,
       powerId: report.powerId,
@@ -74,6 +92,17 @@ export async function findAllDayReport(
             ...current,
             createdAt: moment(current.createdAt).tz('Asia/Vientiane').format(),
             updatedAt: moment(current.updatedAt).tz('Asia/Vientiane').format(),
+          }
+        : null,
+      dayReportHistory: latestHistory
+        ? {
+            ...latestHistory,
+            createdAt: moment(latestHistory.createdAt)
+              .tz('Asia/Vientiane')
+              .format(),
+            updatedAt: moment(latestHistory.updatedAt)
+              .tz('Asia/Vientiane')
+              .format(),
           }
         : null,
     };
