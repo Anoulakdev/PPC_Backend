@@ -46,6 +46,16 @@ export class DaypowerController {
     return this.daypowerService.findAll(req.user, powerId, startDate, endDate);
   }
 
+  @Get('/admindaily')
+  @Roles(2)
+  findAdmin(
+    @Req() req: UserRequest,
+    @Query('powerId') powerId: number,
+    @Query('powerDate') powerDate: string,
+  ) {
+    return this.daypowerService.findAdmin(req.user, powerId, powerDate);
+  }
+
   @Get('/alldocument')
   findAllDocument(
     @Req() req: UserRequest,

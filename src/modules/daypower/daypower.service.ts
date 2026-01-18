@@ -5,6 +5,7 @@ import { UpdateDaypowerDto } from './dto/update-daypower.dto';
 import { AuthUser } from '../../interfaces/auth-user.interface';
 import { createDayPower } from './services/create';
 import { findAllDayPower } from './services/findall';
+import { findAdminDayPower } from './services/findadmin';
 import { findOneDayPower } from './services/findone';
 import { updateAcknowleged } from './services/updateAcknowleged';
 import { updateRevise } from './services/updateRevise';
@@ -32,6 +33,10 @@ export class DaypowerService {
 
   findAll(user: AuthUser, powerId: number, startDate: string, endDate: string) {
     return findAllDayPower(this.prisma, user, powerId, startDate, endDate);
+  }
+
+  findAdmin(user: AuthUser, powerId: number, powerDate: string) {
+    return findAdminDayPower(this.prisma, user, powerId, powerDate);
   }
 
   findAllDocument(
