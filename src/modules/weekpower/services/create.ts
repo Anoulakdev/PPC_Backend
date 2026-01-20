@@ -58,6 +58,12 @@ export async function createWeekPower(
     );
   }
 
+  const power = await prisma.power.findUnique({
+    where: {
+      id: Number(powerId),
+    },
+  });
+
   return prisma.weekPower.create({
     data: {
       ...weekPowerData,
@@ -67,9 +73,13 @@ export async function createWeekPower(
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       createdByUserId: user.id,
-      decAcknowUserId: user.id,
-      decAcknow: true,
-      decAcknowAt: new Date(),
+
+      ...(power?.bossAcknow === false && {
+        decAcknowUserId: user.id,
+        decAcknow: true,
+        decAcknowAt: new Date(),
+      }),
+
       powerStart: {
         create: {
           totalPower,

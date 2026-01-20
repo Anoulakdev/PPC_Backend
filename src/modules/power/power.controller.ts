@@ -11,6 +11,7 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { PowerService } from './power.service';
 import { CreatePowerDto } from './dto/create-power.dto';
@@ -71,6 +72,15 @@ export class PowerController {
     }
 
     return this.powerService.update(id, updatePowerDto);
+  }
+
+  @Put('updatebossacknow/:id')
+  @Roles(2)
+  updateBossAcknow(
+    @Param('id') id: string,
+    @Query('bossacknow', ParseBoolPipe) bossacknow: boolean,
+  ) {
+    return this.powerService.updateBossAcknow(+id, bossacknow);
   }
 
   @Delete(':id')

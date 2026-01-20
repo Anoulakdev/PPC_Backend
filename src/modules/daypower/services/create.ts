@@ -33,15 +33,25 @@ export async function createDayPower(
     );
   }
 
+  const power = await prisma.power.findUnique({
+    where: {
+      id: Number(powerId),
+    },
+  });
+
   return prisma.dayPower.create({
     data: {
       powerId: Number(powerId),
       powerNo: createDaypowerDto.powerNo,
       powerDate: new Date(powerDate),
       createdByUserId: user.id,
-      decAcknowUserId: user.id,
-      decAcknow: true,
-      decAcknowAt: new Date(),
+
+      ...(power?.bossAcknow === false && {
+        decAcknowUserId: user.id,
+        decAcknow: true,
+        decAcknowAt: new Date(),
+      }),
+
       powerStart: {
         create: {
           upstreamLevel: new Prisma.Decimal(

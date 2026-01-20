@@ -34,6 +34,12 @@ export async function createMonthPower(
     );
   }
 
+  const power = await prisma.power.findUnique({
+    where: {
+      id: Number(powerId),
+    },
+  });
+
   return prisma.monthPower.create({
     data: {
       ...monthPowerData,
@@ -42,9 +48,13 @@ export async function createMonthPower(
       sMonth: `${String(sMonth).padStart(2, '0')}`,
       yearmonth: `${sYear}${String(sMonth).padStart(2, '0')}`,
       createdByUserId: user.id,
-      decAcknowUserId: user.id,
-      decAcknow: true,
-      decAcknowAt: new Date(),
+
+      ...(power?.bossAcknow === false && {
+        decAcknowUserId: user.id,
+        decAcknow: true,
+        decAcknowAt: new Date(),
+      }),
+
       powerStart: {
         create: {
           totalPower,

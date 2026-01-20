@@ -36,14 +36,18 @@ model User {
   DayPowerDecAcknow     DayPower[]         @relation("DayPowerDecAcknow")
   DayPowerDisAcknow     DayPower[]         @relation("DayPowerDisAcknow")
   DayReviseUser         DayRevise[]        @relation("DayReviseUser")
-  MonthPowerCreatedById MonthPower[]       @relation("MonthPowerCreatedById")
-  MonthPowerDecAcknow   MonthPower[]       @relation("MonthPowerDecAcknow")
-  MonthPowerDisAcknow   MonthPower[]       @relation("MonthPowerDisAcknow")
-  MonthReviseUser       MonthRevise[]      @relation("MonthReviseUser")
   WeekPowerCreatedById  WeekPower[]        @relation("WeekPowerCreatedById")
   WeekPowerDecAcknow    WeekPower[]        @relation("WeekPowerDecAcknow")
   WeekPowerDisAcknow    WeekPower[]        @relation("WeekPowerDisAcknow")
   WeekReviseUser        WeekRevise[]       @relation("WeekReviseUser")
+  MonthPowerCreatedById MonthPower[]       @relation("MonthPowerCreatedById")
+  MonthPowerDecAcknow   MonthPower[]       @relation("MonthPowerDecAcknow")
+  MonthPowerDisAcknow   MonthPower[]       @relation("MonthPowerDisAcknow")
+  MonthReviseUser       MonthRevise[]      @relation("MonthReviseUser")
+  YearPowerCreatedById  YearPower[]        @relation("YearPowerCreatedById")
+  YearPowerDecAcknow    YearPower[]        @relation("YearPowerDecAcknow")
+  YearPowerDisAcknow    YearPower[]        @relation("YearPowerDisAcknow")
+  YearReviseUser        YearRevise[]       @relation("YearReviseUser")
 }
 
 model Company {
@@ -107,6 +111,7 @@ model Power {
   isActive         String?      @default("A")
   address          String?      @db.VarChar(255)
   phone            String?      @db.VarChar(255)
+  bossAcknow       Boolean      @default(false)
   voltageId        Int?
   voltage          Voltage?     @relation(fields: [voltageId], references: [id])
   fuelId           Int?
@@ -136,6 +141,7 @@ model Power {
   dayReports       DayReport[]
   weekPowers       WeekPower[]
   monthPowers      MonthPower[]
+  yearPowers       YearPower[]
 }
 
 model UserPower {
@@ -560,5 +566,71 @@ model MonthReviseDetail {
   totalDate      Int
   remark         String?     @db.Text
   remarks        Json
+  reviseTurbines Json
+}
+
+model YearPower {
+  id              Int           @id @default(autoincrement())
+  powerId         Int
+  power           Power         @relation(fields: [powerId], references: [id])
+  powerNo         String        @db.VarChar(50)
+  sYear           String        @db.VarChar(50)
+  createdByUserId Int
+  createdByUser   User          @relation("YearPowerCreatedById", fields: [createdByUserId], references: [id])
+  decAcknowUserId Int?
+  decAcknowUser   User?         @relation("YearPowerDecAcknow", fields: [decAcknowUserId], references: [id])
+  decAcknow       Boolean       @default(false)
+  decAcknowAt     DateTime?     @db.Timestamptz(0)
+  disAcknowUserId Int?
+  disAcknowUser   User?         @relation("YearPowerDisAcknow", fields: [disAcknowUserId], references: [id])
+  disAcknow       Boolean       @default(false)
+  disAcknowAt     DateTime?     @db.Timestamptz(0)
+  powerStart      YearStart?    @relation("PowerStart")
+  powerOriginal   YearOriginal? @relation("PowerOriginal")
+  powerCurrent    YearCurrent?  @relation("PowerCurrent")
+  powerRevises    YearRevise[]
+  revise          Boolean       @default(false)
+  createdAt       DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime      @updatedAt @db.Timestamptz(0)
+
+  @@index([powerId, sYear])
+}
+
+model YearStart {
+  id            Int       @id @default(autoincrement())
+  yearPowerId   Int       @unique
+  yearPower     YearPower @relation("PowerStart", fields: [yearPowerId], references: [id])
+  startTurbines Json
+}
+
+model YearOriginal {
+  id               Int       @id @default(autoincrement())
+  yearPowerId      Int       @unique
+  yearPower        YearPower @relation("PowerOriginal", fields: [yearPowerId], references: [id])
+  originalTurbines Json
+}
+
+model YearCurrent {
+  id              Int       @id @default(autoincrement())
+  yearPowerId     Int       @unique
+  yearPower       YearPower @relation("PowerCurrent", fields: [yearPowerId], references: [id])
+  currentTurbines Json
+}
+
+model YearRevise {
+  id           Int               @id @default(autoincrement())
+  yearPowerId  Int
+  yearPower    YearPower         @relation(fields: [yearPowerId], references: [id])
+  reviseUserId Int
+  reviseUser   User              @relation("YearReviseUser", fields: [reviseUserId], references: [id])
+  reviseDetail YearReviseDetail? @relation("ReviseDetail")
+  createdAt    DateTime          @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime          @updatedAt @db.Timestamptz(0)
+}
+
+model YearReviseDetail {
+  id             Int        @id @default(autoincrement())
+  yearreviseId   Int        @unique
+  yearRevise     YearRevise @relation("ReviseDetail", fields: [yearreviseId], references: [id])
   reviseTurbines Json
 }

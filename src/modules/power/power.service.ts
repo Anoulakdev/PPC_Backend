@@ -6,6 +6,7 @@ import { createPower } from './services/create';
 import { findAllPower } from './services/findall';
 import { findOnePower } from './services/findone';
 import { updatePower } from './services/update';
+import { updateBossAcknow } from './services/updateBossAcknow';
 import { removePower } from './services/remove';
 import { selectPower } from './services/selectPower';
 
@@ -31,6 +32,10 @@ export class PowerService {
 
   update(id: number, updatePowerDto: UpdatePowerDto) {
     return updatePower(this.prisma, id, updatePowerDto);
+  }
+
+  updateBossAcknow(id: number, bossacknow: boolean) {
+    return updateBossAcknow(this.prisma, id, bossacknow);
   }
 
   remove(id: number) {
