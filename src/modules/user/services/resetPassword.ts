@@ -1,4 +1,8 @@
-import { HttpStatus, NotFoundException } from '@nestjs/common';
+import {
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 
@@ -9,7 +13,11 @@ export async function resetPassword(prisma: PrismaService, id: number) {
     throw new NotFoundException('User not found');
   }
 
-  const hashedPassword = await bcrypt.hash('PPCD1234', 10);
+  if (!process.env.DEFAULT_PASSWORD) {
+    throw new InternalServerErrorException('DEFAULT_PASSWORD is not defined');
+  }
+
+  const hashedPassword = await bcrypt.hash(process.env.DEFAULT_PASSWORD, 10);
 
   await prisma.user.update({
     where: { id },

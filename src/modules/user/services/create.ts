@@ -1,4 +1,7 @@
-import { BadRequestException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
@@ -19,7 +22,11 @@ export async function createUser(
       throw new BadRequestException('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash('PPCD1234', 10);
+    if (!process.env.DEFAULT_PASSWORD) {
+      throw new InternalServerErrorException('DEFAULT_PASSWORD is not defined');
+    }
+
+    const hashedPassword = await bcrypt.hash(process.env.DEFAULT_PASSWORD, 10);
     const { powerIds = [], ...rest } = createUserDto;
 
     const newUser = await prisma.user.create({
@@ -42,13 +49,8 @@ export async function createUser(
     return newUser;
   } catch (error) {
     if (Imgfilename) {
-      const filePath = path.join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        '..',
-        'uploads',
+      const filePath = path.resolve(
+        process.env.UPLOAD_BASE_PATH || '',
         'user',
         Imgfilename,
       );

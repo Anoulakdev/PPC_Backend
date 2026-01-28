@@ -45,13 +45,8 @@ export async function createPower(
     });
   } catch (error) {
     if (Imgfilename) {
-      const filePath = path.join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        '..',
-        'uploads',
+      const filePath = path.resolve(
+        process.env.UPLOAD_BASE_PATH || '',
         'power',
         Imgfilename,
       );

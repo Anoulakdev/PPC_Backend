@@ -19,6 +19,8 @@ import { RegionModule } from './modules/region/region.module';
 import { OwnerModule } from './modules/owner/owner.module';
 import { ReportModule } from './modules/report/report.module';
 import { DayreportModule } from './modules/dayreport/dayreport.module';
+import { EventModule } from './modules/event/event.module';
+import { MaintenanceModule } from './modules/maintenance/maintenance.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { DayreportModule } from './modules/dayreport/dayreport.module';
     OwnerModule,
     ReportModule,
     DayreportModule,
+    EventModule,
+    MaintenanceModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

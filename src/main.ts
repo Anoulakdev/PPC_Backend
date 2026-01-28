@@ -2,8 +2,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { join } from 'path';
 import * as express from 'express';
+import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,7 +30,14 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   app.setGlobalPrefix('api');
-  app.use('/upload', express.static(join(__dirname, '..', 'uploads')));
+  // ✅ STATIC FILES (รองรับ Windows / Linux)
+  const uploadBasePath = process.env.UPLOAD_BASE_PATH;
+  if (!uploadBasePath) {
+    throw new Error('UPLOAD_BASE_PATH is not defined');
+  }
+
+  app.use('/upload', express.static(path.resolve(uploadBasePath)));
+
   await app.listen(4000);
 }
 bootstrap();

@@ -8,13 +8,8 @@ export async function removePower(prisma: PrismaService, id: number) {
   if (!power) throw new NotFoundException('power not found');
 
   if (power.powerimg) {
-    const imagePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      'uploads',
+    const imagePath = path.resolve(
+      process.env.UPLOAD_BASE_PATH || '',
       'power',
       power.powerimg,
     );

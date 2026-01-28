@@ -14,40 +14,42 @@ datasource db {
 }
 
 model User {
-  id                    Int                @id @default(autoincrement())
-  email                 String             @unique @db.VarChar(255)
-  password              String             @db.VarChar(255)
-  firstname             String             @db.VarChar(255)
-  lastname              String             @db.VarChar(255)
-  roleId                Int
-  role                  Role               @relation(fields: [roleId], references: [id])
-  phone                 String?
-  isActive              String?            @default("A")
-  isOnline              Boolean            @default(false)
-  userimg               String?
-  companyId             Int?
-  company               Company?           @relation(fields: [companyId], references: [id])
-  createdAt             DateTime           @default(now()) @db.Timestamptz(0)
-  updatedAt             DateTime           @updatedAt @db.Timestamptz(0)
-  powers                UserPower[]
-  DayReportCurrentById  DayReportCurrent[] @relation("DayReportCurrent")
-  DayReportHistoryById  DayReportHistory[] @relation("DayReportHistory")
-  DayPowerCreatedById   DayPower[]         @relation("DayPowerCreatedById")
-  DayPowerDecAcknow     DayPower[]         @relation("DayPowerDecAcknow")
-  DayPowerDisAcknow     DayPower[]         @relation("DayPowerDisAcknow")
-  DayReviseUser         DayRevise[]        @relation("DayReviseUser")
-  WeekPowerCreatedById  WeekPower[]        @relation("WeekPowerCreatedById")
-  WeekPowerDecAcknow    WeekPower[]        @relation("WeekPowerDecAcknow")
-  WeekPowerDisAcknow    WeekPower[]        @relation("WeekPowerDisAcknow")
-  WeekReviseUser        WeekRevise[]       @relation("WeekReviseUser")
-  MonthPowerCreatedById MonthPower[]       @relation("MonthPowerCreatedById")
-  MonthPowerDecAcknow   MonthPower[]       @relation("MonthPowerDecAcknow")
-  MonthPowerDisAcknow   MonthPower[]       @relation("MonthPowerDisAcknow")
-  MonthReviseUser       MonthRevise[]      @relation("MonthReviseUser")
-  YearPowerCreatedById  YearPower[]        @relation("YearPowerCreatedById")
-  YearPowerDecAcknow    YearPower[]        @relation("YearPowerDecAcknow")
-  YearPowerDisAcknow    YearPower[]        @relation("YearPowerDisAcknow")
-  YearReviseUser        YearRevise[]       @relation("YearReviseUser")
+  id                     Int                @id @default(autoincrement())
+  email                  String             @unique @db.VarChar(255)
+  password               String             @db.VarChar(255)
+  firstname              String             @db.VarChar(255)
+  lastname               String             @db.VarChar(255)
+  roleId                 Int
+  role                   Role               @relation(fields: [roleId], references: [id])
+  phone                  String?
+  isActive               String?            @default("A")
+  isOnline               Boolean            @default(false)
+  userimg                String?
+  companyId              Int?
+  company                Company?           @relation(fields: [companyId], references: [id])
+  createdAt              DateTime           @default(now()) @db.Timestamptz(0)
+  updatedAt              DateTime           @updatedAt @db.Timestamptz(0)
+  powers                 UserPower[]
+  DayReportCurrentById   DayReportCurrent[] @relation("DayReportCurrent")
+  DayReportHistoryById   DayReportHistory[] @relation("DayReportHistory")
+  DayPowerCreatedById    DayPower[]         @relation("DayPowerCreatedById")
+  DayPowerDecAcknow      DayPower[]         @relation("DayPowerDecAcknow")
+  DayPowerDisAcknow      DayPower[]         @relation("DayPowerDisAcknow")
+  DayReviseUser          DayRevise[]        @relation("DayReviseUser")
+  WeekPowerCreatedById   WeekPower[]        @relation("WeekPowerCreatedById")
+  WeekPowerDecAcknow     WeekPower[]        @relation("WeekPowerDecAcknow")
+  WeekPowerDisAcknow     WeekPower[]        @relation("WeekPowerDisAcknow")
+  WeekReviseUser         WeekRevise[]       @relation("WeekReviseUser")
+  MonthPowerCreatedById  MonthPower[]       @relation("MonthPowerCreatedById")
+  MonthPowerDecAcknow    MonthPower[]       @relation("MonthPowerDecAcknow")
+  MonthPowerDisAcknow    MonthPower[]       @relation("MonthPowerDisAcknow")
+  MonthReviseUser        MonthRevise[]      @relation("MonthReviseUser")
+  YearPowerCreatedById   YearPower[]        @relation("YearPowerCreatedById")
+  YearPowerDecAcknow     YearPower[]        @relation("YearPowerDecAcknow")
+  YearPowerDisAcknow     YearPower[]        @relation("YearPowerDisAcknow")
+  YearReviseUser         YearRevise[]       @relation("YearReviseUser")
+  EventReportCreatedById EventReport[]      @relation("EventReportCreatedById")
+  MaintenanceCreatedById MaintenancePlan[]  @relation("MaintenanceCreatedById")
 }
 
 model Company {
@@ -102,46 +104,48 @@ model Region {
 }
 
 model Power {
-  id               Int          @id @default(autoincrement())
+  id               Int               @id @default(autoincrement())
   companyId        Int
-  company          Company      @relation(fields: [companyId], references: [id])
-  name             String       @db.VarChar(255)
+  company          Company           @relation(fields: [companyId], references: [id])
+  name             String            @db.VarChar(255)
   unit             Int
-  abbreviation     String?      @db.VarChar(255)
-  isActive         String?      @default("A")
-  address          String?      @db.VarChar(255)
-  phone            String?      @db.VarChar(255)
-  bossAcknow       Boolean      @default(false)
+  abbreviation     String?           @db.VarChar(255)
+  isActive         String?           @default("A")
+  address          String?           @db.VarChar(255)
+  phone            String?           @db.VarChar(255)
+  bossAcknow       Boolean           @default(false)
   voltageId        Int?
-  voltage          Voltage?     @relation(fields: [voltageId], references: [id])
+  voltage          Voltage?          @relation(fields: [voltageId], references: [id])
   fuelId           Int?
-  fuel             FuelType?    @relation(fields: [fuelId], references: [id])
+  fuel             FuelType?         @relation(fields: [fuelId], references: [id])
   contractId       Int?
-  contract         Contract?    @relation(fields: [contractId], references: [id])
+  contract         Contract?         @relation(fields: [contractId], references: [id])
   branchId         Int?
-  branch           Branch?      @relation(fields: [branchId], references: [id])
+  branch           Branch?           @relation(fields: [branchId], references: [id])
   regionId         Int?
-  region           Region?      @relation(fields: [regionId], references: [id])
+  region           Region?           @relation(fields: [regionId], references: [id])
   ownerId          Int?
-  owner            Owner?       @relation(fields: [ownerId], references: [id])
-  latitude         Float?       @db.DoublePrecision
-  longitude        Float?       @db.DoublePrecision
-  installCapacity  Decimal?     @db.Decimal
-  baseEnergy       Decimal?     @db.Decimal
-  fullLevel        Decimal?     @db.Decimal
-  deadLevel        Decimal?     @db.Decimal
-  totalStorageFull Decimal?     @db.Decimal
-  totalStorageDead Decimal?     @db.Decimal
-  totalActiveFull  Decimal?     @db.Decimal
-  totalActiveDead  Decimal?     @db.Decimal
-  codDate          DateTime?    @db.Timestamptz(0)
-  powerimg         String?      @db.VarChar(255)
+  owner            Owner?            @relation(fields: [ownerId], references: [id])
+  latitude         Float?            @db.DoublePrecision
+  longitude        Float?            @db.DoublePrecision
+  installCapacity  Decimal?          @db.Decimal
+  baseEnergy       Decimal?          @db.Decimal
+  fullLevel        Decimal?          @db.Decimal
+  deadLevel        Decimal?          @db.Decimal
+  totalStorageFull Decimal?          @db.Decimal
+  totalStorageDead Decimal?          @db.Decimal
+  totalActiveFull  Decimal?          @db.Decimal
+  totalActiveDead  Decimal?          @db.Decimal
+  codDate          DateTime?         @db.Timestamptz(0)
+  powerimg         String?           @db.VarChar(255)
   users            UserPower[]
   dayPowers        DayPower[]
   dayReports       DayReport[]
   weekPowers       WeekPower[]
   monthPowers      MonthPower[]
   yearPowers       YearPower[]
+  eventReports     EventReport[]
+  maintenancePlans MaintenancePlan[]
 }
 
 model UserPower {
@@ -633,4 +637,47 @@ model YearReviseDetail {
   yearreviseId   Int        @unique
   yearRevise     YearRevise @relation("ReviseDetail", fields: [yearreviseId], references: [id])
   reviseTurbines Json
+}
+
+model EventReport {
+  id              Int      @id @default(autoincrement())
+  powerId         Int
+  power           Power    @relation(fields: [powerId], references: [id])
+  createdByUserId Int
+  createdByUser   User     @relation("EventReportCreatedById", fields: [createdByUserId], references: [id])
+  eventName       String   @db.Text
+  startDate       DateTime @db.Timestamptz(0)
+  endDate         DateTime @db.Timestamptz(0)
+  startTime       String   @db.VarChar(50)
+  endTime         String   @db.VarChar(50)
+  rootCause       String?  @db.Text
+  preventive      String?  @db.Text
+  remark          String?  @db.Text
+  eventFile       String?  @db.VarChar(255)
+  partAdd         Int?
+  createdAt       DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(0)
+
+  @@index([powerId])
+}
+
+model MaintenancePlan {
+  id              Int      @id @default(autoincrement())
+  powerId         Int
+  power           Power    @relation(fields: [powerId], references: [id])
+  createdByUserId Int
+  createdByUser   User     @relation("MaintenanceCreatedById", fields: [createdByUserId], references: [id])
+  maintenanceName String   @db.Text
+  startDate       DateTime @db.Timestamptz(0)
+  endDate         DateTime @db.Timestamptz(0)
+  startTime       String   @db.VarChar(50)
+  endTime         String   @db.VarChar(50)
+  detail          String?  @db.Text
+  remark          String?  @db.Text
+  maintenanceFile String?  @db.VarChar(255)
+  partAdd         Int?
+  createdAt       DateTime @default(now()) @db.Timestamptz(0)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(0)
+
+  @@index([powerId])
 }

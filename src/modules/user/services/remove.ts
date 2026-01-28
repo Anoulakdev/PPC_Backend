@@ -11,13 +11,8 @@ export async function removeUser(prisma: PrismaService, id: number) {
   }
 
   if (user.userimg) {
-    const imagePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      'uploads',
+    const imagePath = path.resolve(
+      process.env.UPLOAD_BASE_PATH || '',
       'user',
       user.userimg,
     );

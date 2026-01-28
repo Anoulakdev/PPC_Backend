@@ -19,13 +19,8 @@ export async function updateUser(
 
   // ✅ ลบรูปเก่าเมื่อมีการอัปโหลดรูปใหม่
   if (updateUserDto.userimg && updateUserDto.userimg !== oldImage) {
-    const oldImagePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      'uploads',
+    const oldImagePath = path.resolve(
+      process.env.UPLOAD_BASE_PATH || '',
       'user',
       oldImage,
     );

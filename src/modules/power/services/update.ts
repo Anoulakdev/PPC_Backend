@@ -15,13 +15,8 @@ export async function updatePower(
   const oldImage = power.powerimg || '';
 
   if (updatePowerDto.powerimg && updatePowerDto.powerimg !== oldImage) {
-    const oldImagePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      '..',
-      'uploads',
+    const oldImagePath = path.resolve(
+      process.env.UPLOAD_BASE_PATH || '',
       'power',
       oldImage,
     );

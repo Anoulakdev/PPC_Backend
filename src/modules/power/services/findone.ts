@@ -1,5 +1,6 @@
 import { PrismaService } from '../../../prisma/prisma.service';
 import { NotFoundException } from '@nestjs/common';
+import * as moment from 'moment-timezone';
 
 export async function findOnePower(prisma: PrismaService, id: number) {
   const power = await prisma.power.findUnique({
@@ -15,5 +16,8 @@ export async function findOnePower(prisma: PrismaService, id: number) {
     },
   });
   if (!power) throw new NotFoundException('power not found');
-  return power;
+  return {
+    ...power,
+    codDate: moment(power.codDate).tz('Asia/Vientiane').format('YYYY-MM-DD'),
+  };
 }
