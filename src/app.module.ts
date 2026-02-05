@@ -21,6 +21,7 @@ import { ReportModule } from './modules/report/report.module';
 import { DayreportModule } from './modules/dayreport/dayreport.module';
 import { EventModule } from './modules/event/event.module';
 import { MaintenanceModule } from './modules/maintenance/maintenance.module';
+import { YearpowerModule } from './modules/yearpower/yearpower.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { MaintenanceModule } from './modules/maintenance/maintenance.module';
     DaypowerModule,
     WeekpowerModule,
     MonthpowerModule,
+    YearpowerModule,
     VoltageModule,
     FueltypeModule,
     ContractModule,

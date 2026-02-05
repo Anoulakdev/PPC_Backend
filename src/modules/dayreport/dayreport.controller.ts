@@ -42,6 +42,21 @@ export class DayreportController {
     return this.dayreportService.findAll(req.user, powerId, startDate, endDate);
   }
 
+  @Get('/sumnetenergy')
+  sumNetEnergy(
+    @Req() req: UserRequest,
+    @Query('powerId') powerId: number,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.dayreportService.sumNetEnergy(
+      req.user,
+      powerId,
+      startDate,
+      endDate,
+    );
+  }
+
   @Get('/checkpowerdate')
   checkPowerDate(
     @Query('powerId') powerId: number,

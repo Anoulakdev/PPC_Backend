@@ -4,6 +4,7 @@ import { AuthUser } from '../../interfaces/auth-user.interface';
 import { dayPower } from './services/dayPower';
 import { weekPower } from './services/weekPower';
 import { monthPower } from './services/monthPower';
+import { yearPower } from './services/yearPower';
 
 @Injectable()
 export class ReportService {
@@ -24,5 +25,9 @@ export class ReportService {
 
   monthPower(user: AuthUser, powerId: number, sYear: string, sMonth: string) {
     return monthPower(this.prisma, user, powerId, sYear, sMonth);
+  }
+
+  yearPower(user: AuthUser, powerId: number, sYear: string) {
+    return yearPower(this.prisma, user, powerId, sYear);
   }
 }

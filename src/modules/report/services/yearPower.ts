@@ -3,12 +3,11 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
 import * as moment from 'moment-timezone';
 
-export async function monthPower(
+export async function yearPower(
   prisma: PrismaService,
   user: AuthUser,
   powerId: number,
   sYear: string,
-  sMonth: string,
 ) {
   const where: any = {
     AND: [
@@ -17,13 +16,12 @@ export async function monthPower(
         : []),
       ...(powerId ? [{ powerId: Number(powerId) }] : []),
       { sYear: sYear },
-      ...(sMonth ? [{ sMonth: `${String(sMonth).padStart(2, '0')}` }] : []),
     ],
   };
 
-  const monthpowers = await prisma.monthPower.findMany({
+  const yearpowers = await prisma.yearPower.findMany({
     where,
-    orderBy: { sMonth: 'asc' },
+    orderBy: { sYear: 'asc' },
     include: {
       createdByUser: {
         select: {
@@ -63,30 +61,20 @@ export async function monthPower(
       },
       powerOriginal: true,
       powerCurrent: true,
-      // powerOriginal: {
-      //   select: {
-      //     totalPower: true,
-      //   },
-      // },
-      // powerCurrent: {
-      //   select: {
-      //     totalPower: true,
-      //   },
-      // },
     },
   });
 
-  return monthpowers.map((monthpower) => {
+  return yearpowers.map((yearpower) => {
     return {
-      ...monthpower,
-      decAcknowAt: monthpower.decAcknowAt
-        ? moment(monthpower.decAcknowAt).tz('Asia/Vientiane').format()
+      ...yearpower,
+      decAcknowAt: yearpower.decAcknowAt
+        ? moment(yearpower.decAcknowAt).tz('Asia/Vientiane').format()
         : null,
-      disAcknowAt: monthpower.disAcknowAt
-        ? moment(monthpower.disAcknowAt).tz('Asia/Vientiane').format()
+      disAcknowAt: yearpower.disAcknowAt
+        ? moment(yearpower.disAcknowAt).tz('Asia/Vientiane').format()
         : null,
-      createdAt: moment(monthpower.createdAt).tz('Asia/Vientiane').format(),
-      updatedAt: moment(monthpower.updatedAt).tz('Asia/Vientiane').format(),
+      createdAt: moment(yearpower.createdAt).tz('Asia/Vientiane').format(),
+      updatedAt: moment(yearpower.updatedAt).tz('Asia/Vientiane').format(),
     };
   });
 }

@@ -63,7 +63,9 @@ export async function findAllDayReport(
           createdAt: 'desc',
         },
         take: 1,
-        include: {
+        select: {
+          createdAt: true,
+          updatedAt: true,
           createdByUser: {
             select: {
               id: true,
@@ -72,7 +74,7 @@ export async function findAllDayReport(
               lastname: true,
             },
           },
-          powerHistory: true,
+          // powerHistory: true,
         },
       },
     },

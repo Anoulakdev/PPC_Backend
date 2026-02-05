@@ -5,6 +5,7 @@ import { UpdateDayreportDto } from './dto/update-dayreport.dto';
 import { AuthUser } from '../../interfaces/auth-user.interface';
 import { createDayReport } from './services/create';
 import { findAllDayReport } from './services/findall';
+import { sumNetEnergy } from './services/sumNetEnergy';
 import { findOneDayReport } from './services/findone';
 import { waterLevel } from './services/waterLevel';
 import { checkPowerDate } from './services/checkpowerdate';
@@ -22,6 +23,15 @@ export class DayreportService {
 
   findAll(user: AuthUser, powerId: number, startDate: string, endDate: string) {
     return findAllDayReport(this.prisma, user, powerId, startDate, endDate);
+  }
+
+  sumNetEnergy(
+    user: AuthUser,
+    powerId: number,
+    startDate: string,
+    endDate: string,
+  ) {
+    return sumNetEnergy(this.prisma, user, powerId, startDate, endDate);
   }
 
   checkPowerDate(powerId: number, powerDate: string) {

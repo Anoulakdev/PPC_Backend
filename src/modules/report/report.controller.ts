@@ -3,11 +3,11 @@ import { ReportService } from './report.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserRequest } from '../../interfaces/user-request.interface';
 
+@UseGuards(JwtAuthGuard)
 @Controller('reports')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('/day')
   dayPower(
     @Req() req: UserRequest,
@@ -18,7 +18,6 @@ export class ReportController {
     return this.reportService.dayPower(req.user, powerId, startDate, endDate);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/week')
   weekPower(
     @Req() req: UserRequest,
@@ -29,7 +28,6 @@ export class ReportController {
     return this.reportService.weekPower(req.user, powerId, sYear, sWeek);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/month')
   monthPower(
     @Req() req: UserRequest,
@@ -38,5 +36,14 @@ export class ReportController {
     @Query('sMonth') sMonth: string,
   ) {
     return this.reportService.monthPower(req.user, powerId, sYear, sMonth);
+  }
+
+  @Get('/year')
+  yearPower(
+    @Req() req: UserRequest,
+    @Query('powerId') powerId: number,
+    @Query('sYear') sYear: string,
+  ) {
+    return this.reportService.yearPower(req.user, powerId, sYear);
   }
 }
