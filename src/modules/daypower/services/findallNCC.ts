@@ -1,13 +1,22 @@
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
+interface CombinedPowerOriginal {
+  id: number;
+  dayPowerId: number;
+  totalPower: any;
+  totalUnit: number;
+  remark?: string | null;
+  combinedHourlyOriginal: number[];
+}
+
 interface CombinedPowerCurrent {
   id: number;
   dayPowerId: number;
   totalPower: any;
   totalUnit: number;
   remark?: string | null;
-  combinedHourly: number[];
+  combinedHourlyCurrent: number[];
 }
 
 interface ItemResult {
@@ -31,7 +40,13 @@ interface ItemResult {
     firstname: string;
     lastname: string;
   } | null;
-  power: { id: number; name: string; company: { id: number; name: string } };
+  power: {
+    id: number;
+    name: string;
+    installCapacity: Prisma.Decimal | null;
+    company: { id: number; name: string };
+  };
+  powerOriginal: CombinedPowerOriginal | null;
   powerCurrent: CombinedPowerCurrent | null;
 }
 
@@ -89,18 +104,20 @@ export async function findallNCC(
         select: {
           id: true,
           name: true,
+          installCapacity: true,
           company: {
             select: { id: true, name: true },
           },
           regionId: true,
         },
       },
+      powerOriginal: true,
       powerCurrent: true,
     },
   });
 
   const transformed: ItemResult[] = data.map((item) => {
-    const combinedHourly = Array<number>(24).fill(0);
+    const combinedHourlyCurrent = Array<number>(24).fill(0);
     const currentTurbines = item.powerCurrent?.currentTurbines as
       | Array<{ hourly: number[] }>
       | undefined;
@@ -109,18 +126,50 @@ export async function findallNCC(
       currentTurbines.forEach((turbine) => {
         const hourlyData = turbine.hourly ?? [];
         for (let i = 0; i < 24; i++) {
-          combinedHourly[i] += Number(hourlyData[i] || 0);
+          combinedHourlyCurrent[i] += Number(hourlyData[i] || 0);
         }
       });
 
       // ✅ Format to 2 decimals afterward
       for (let i = 0; i < 24; i++) {
-        combinedHourly[i] = Number(combinedHourly[i].toFixed(2));
+        combinedHourlyCurrent[i] = Number(combinedHourlyCurrent[i].toFixed(2));
+      }
+    }
+
+    const combinedHourlyOriginal = Array<number>(24).fill(0);
+
+    const originalTurbines = item.powerOriginal?.originalTurbines as
+      | Array<{ hourly: number[] }>
+      | undefined;
+
+    if (originalTurbines) {
+      originalTurbines.forEach((turbine) => {
+        const hourlyData = turbine.hourly ?? [];
+        for (let i = 0; i < 24; i++) {
+          combinedHourlyOriginal[i] += Number(hourlyData[i] || 0);
+        }
+      });
+
+      // ✅ Format to 2 decimals afterward
+      for (let i = 0; i < 24; i++) {
+        combinedHourlyOriginal[i] = Number(
+          combinedHourlyOriginal[i].toFixed(2),
+        );
       }
     }
 
     return {
       ...item,
+      powerOriginal: item.powerOriginal
+        ? {
+            id: item.powerOriginal.id,
+            dayPowerId: item.powerOriginal.dayPowerId,
+            totalPower: item.powerOriginal.totalPower,
+            totalUnit: item.powerOriginal.totalUnit,
+            remark: item.powerOriginal.remark,
+            combinedHourlyOriginal,
+          }
+        : null,
       powerCurrent: item.powerCurrent
         ? {
             id: item.powerCurrent.id,
@@ -128,7 +177,7 @@ export async function findallNCC(
             totalPower: item.powerCurrent.totalPower,
             totalUnit: item.powerCurrent.totalUnit,
             remark: item.powerCurrent.remark,
-            combinedHourly,
+            combinedHourlyCurrent,
           }
         : null,
     };
