@@ -10,6 +10,7 @@ export async function findOneDayReport(prisma: PrismaService, id: number) {
         select: {
           id: true,
           name: true,
+          fuelId: true,
           company: {
             select: {
               id: true,

@@ -37,6 +37,7 @@ export async function findAllDayReport(
         select: {
           id: true,
           name: true,
+          fuelId: true,
           company: {
             select: {
               id: true,

@@ -7,6 +7,17 @@ export async function findRevise(prisma: PrismaService, id: number) {
     where: { id },
     include: {
       powerHistory: true,
+      dayReport: {
+        select: {
+          power: {
+            select: {
+              id: true,
+              name: true,
+              fuelId: true,
+            },
+          },
+        },
+      },
     },
   });
 
