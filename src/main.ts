@@ -1,12 +1,27 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as express from 'express';
 import * as path from 'path';
+import { rateLimit } from 'express-rate-limit';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // ✅ Rate Limit: 100 request ต่อ 1 นาที ต่อ IP
+  const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 นาที
+    max: 100, // 100 request ต่อ window
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: new Error(
+      'Too many requests from this IP, please try again after a minute',
+    ),
+  });
+  app.use(limiter);
 
   // ✅ เปิด CORS ทั้งหมด (ทุก domain, ทุก method, ทุก header)
   app.enableCors({
