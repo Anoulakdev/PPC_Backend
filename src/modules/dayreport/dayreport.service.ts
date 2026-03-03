@@ -25,13 +25,8 @@ export class DayreportService {
     return findAllDayReport(this.prisma, user, powerId, startDate, endDate);
   }
 
-  sumNetEnergy(
-    user: AuthUser,
-    powerId: number,
-    startDate: string,
-    endDate: string,
-  ) {
-    return sumNetEnergy(this.prisma, user, powerId, startDate, endDate);
+  sumNetEnergy(powerId: number, startDate: string, endDate: string) {
+    return sumNetEnergy(this.prisma, powerId, startDate, endDate);
   }
 
   checkPowerDate(powerId: number, powerDate: string) {

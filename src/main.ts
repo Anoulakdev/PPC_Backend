@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -17,9 +15,7 @@ async function bootstrap() {
     max: 100, // 100 request ต่อ window
     standardHeaders: true,
     legacyHeaders: false,
-    message: new Error(
-      'Too many requests from this IP, please try again after a minute',
-    ),
+    message: 'Too many requests, please try again later.',
   });
   app.use(limiter);
 
@@ -52,6 +48,8 @@ async function bootstrap() {
   }
 
   app.use('/upload', express.static(path.resolve(uploadBasePath)));
+
+  // app.enableShutdownHooks();
 
   await app.listen(4000);
 }

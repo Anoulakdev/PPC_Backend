@@ -44,17 +44,11 @@ export class DayreportController {
 
   @Get('/sumnetenergy')
   sumNetEnergy(
-    @Req() req: UserRequest,
     @Query('powerId') powerId: number,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    return this.dayreportService.sumNetEnergy(
-      req.user,
-      powerId,
-      startDate,
-      endDate,
-    );
+    return this.dayreportService.sumNetEnergy(powerId, startDate, endDate);
   }
 
   @Get('/checkpowerdate')
