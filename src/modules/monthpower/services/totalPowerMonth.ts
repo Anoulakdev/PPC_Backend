@@ -1,11 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaService } from '../../../prisma/prisma.service';
 import * as moment from 'moment-timezone';
-import { Decimal } from '@prisma/client/runtime/library';
-
-type PowerSumData = {
-  powerOriginal?: { totalPower: Decimal | null } | null;
-  powerCurrent?: { totalPower: Decimal | null } | null;
-};
 
 export async function totalPowerMonth(prisma: PrismaService, powerId: number) {
   const timezone = 'Asia/Vientiane';
@@ -18,77 +13,71 @@ export async function totalPowerMonth(prisma: PrismaService, powerId: number) {
   const lastMonth = lastMonthMoment.format('MM');
   const lastMonthYear = lastMonthMoment.format('YYYY');
 
-  // label สำหรับแสดง
+  // label
   const currentMonthStr = now.format('MM/YYYY');
   const lastMonthStr = lastMonthMoment.format('MM/YYYY');
   const yearStr = currentYear;
 
-  const [lastMonthData, currentMonthData, yearData] = await Promise.all([
-    prisma.monthPower.findMany({
-      where: {
-        powerId: Number(powerId),
-        sYear: lastMonthYear,
-        sMonth: lastMonth,
-      },
-      select: {
-        powerOriginal: { select: { totalPower: true } },
-        powerCurrent: { select: { totalPower: true } },
-      },
-    }),
-    prisma.monthPower.findMany({
-      where: {
-        powerId: Number(powerId),
-        sYear: currentYear,
-        sMonth: currentMonth,
-      },
-      select: {
-        powerOriginal: { select: { totalPower: true } },
-        powerCurrent: { select: { totalPower: true } },
-      },
-    }),
-    prisma.monthPower.findMany({
-      where: {
-        powerId: Number(powerId),
-        sYear: currentYear,
-      },
-      select: {
-        powerOriginal: { select: { totalPower: true } },
-        powerCurrent: { select: { totalPower: true } },
-      },
-    }),
-  ]);
-
-  const sumTotalPower = (data: PowerSumData[]) => {
-    let totalOriginal = new Decimal(0);
-    let totalCurrent = new Decimal(0);
-
-    for (const item of data) {
-      if (item.powerOriginal?.totalPower) {
-        totalOriginal = totalOriginal.plus(item.powerOriginal.totalPower);
-      }
-      if (item.powerCurrent?.totalPower) {
-        totalCurrent = totalCurrent.plus(item.powerCurrent.totalPower);
-      }
-    }
+  // helper
+  const getSum = async (whereMonthPower: any) => {
+    const [original, current] = await Promise.all([
+      prisma.monthOriginal.aggregate({
+        where: {
+          monthPower: {
+            powerId: Number(powerId),
+            ...whereMonthPower,
+          },
+        },
+        _sum: {
+          totalPower: true,
+        },
+      }),
+      prisma.monthCurrent.aggregate({
+        where: {
+          monthPower: {
+            powerId: Number(powerId),
+            ...whereMonthPower,
+          },
+        },
+        _sum: {
+          totalPower: true,
+        },
+      }),
+    ]);
 
     return {
-      totalOriginal: totalOriginal.toNumber(),
-      totalCurrent: totalCurrent.toNumber(),
+      totalOriginal: original._sum.totalPower?.toNumber() || 0,
+      totalCurrent: current._sum.totalPower?.toNumber() || 0,
     };
   };
 
+  // ❗เรียกทีละอัน ลดโหลด DB
+  const lastMonthData = await getSum({
+    sYear: lastMonthYear,
+    sMonth: lastMonth,
+  });
+
+  const currentMonthData = await getSum({
+    sYear: currentYear,
+    sMonth: currentMonth,
+  });
+
+  const yearData = await getSum({
+    sYear: currentYear,
+  });
+
   return {
     lastMonth: {
-      ...sumTotalPower(lastMonthData),
-      lastMonthStr: lastMonthStr,
+      ...lastMonthData,
+      lastMonthStr,
     },
     currentMonth: {
-      ...sumTotalPower(currentMonthData),
-      currentMonthStr: currentMonthStr,
+      ...currentMonthData,
+      currentMonthStr,
     },
     year: {
-      ...sumTotalPower(yearData),
-      yearStr: yearStr,
+      ...yearData,
+      yearStr,
     },
   };
 }

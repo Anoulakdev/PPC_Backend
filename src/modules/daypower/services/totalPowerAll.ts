@@ -1,12 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaService } from '../../../prisma/prisma.service';
 import * as moment from 'moment-timezone';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
-import { Decimal } from '@prisma/client/runtime/library'; // สำคัญ!
-
-type PowerSumData = {
-  powerOriginal?: { totalPower: Decimal | null } | null;
-  powerCurrent?: { totalPower: Decimal | null } | null;
-};
 
 export async function totalPowerAll(prisma: PrismaService, user: AuthUser) {
   const timezone = 'Asia/Vientiane';
@@ -22,117 +17,68 @@ export async function totalPowerAll(prisma: PrismaService, user: AuthUser) {
   const startMonth = now.clone().startOf('month').toDate();
   const endMonth = now.clone().endOf('month').toDate();
 
-  const sToday = moment(startToday).tz(timezone).format('YYYY-MM-DD');
-  const eToday = moment(endToday).tz(timezone).format('YYYY-MM-DD');
-
-  const sYesterday = moment(startYesterday).tz(timezone).format('YYYY-MM-DD');
-  const eYesterday = moment(endYesterday).tz(timezone).format('YYYY-MM-DD');
-
-  const sMonth = moment(startMonth).tz(timezone).format('YYYY-MM-DD');
-  const eMonth = moment(endMonth).tz(timezone).format('YYYY-MM-DD');
-
-  const todayStr = moment().format('DD/MM/YYYY');
-  const yesterdayStr = moment().subtract(1, 'day').format('DD/MM/YYYY');
-  const monthStr = moment().format('MM/YYYY');
+  const todayStr = now.format('DD/MM/YYYY');
+  const yesterdayStr = now.clone().subtract(1, 'day').format('DD/MM/YYYY');
+  const monthStr = now.format('MM/YYYY');
 
   const powerFilter =
     user.roleId === 5 || user.roleId === 6
       ? { powerId: { in: user.powers } }
       : {};
 
-  // ดึงข้อมูลทั้ง 3 ช่วง
-  const [todayData, yesterdayData, monthData] = await Promise.all([
-    prisma.dayPower.findMany({
-      where: {
-        ...powerFilter,
-        decAcknow: true,
-        disAcknow: true,
-        powerDate: {
-          gte: new Date(sToday),
-          lte: new Date(eToday),
+  // helper function ใช้ aggregate
+  const getSum = async (whereDayPower: any) => {
+    const [original, current] = await Promise.all([
+      prisma.dayOriginal.aggregate({
+        where: {
+          dayPower: {
+            ...powerFilter,
+            ...whereDayPower,
+          },
         },
-      },
-      select: {
-        powerOriginal: {
-          select: { totalPower: true },
+        _sum: {
+          totalPower: true,
         },
-        powerCurrent: {
-          select: { totalPower: true },
+      }),
+      prisma.dayCurrent.aggregate({
+        where: {
+          dayPower: {
+            ...powerFilter,
+            ...whereDayPower,
+          },
         },
-      },
-    }),
-    prisma.dayPower.findMany({
-      where: {
-        ...powerFilter,
-        decAcknow: true,
-        disAcknow: true,
-        powerDate: {
-          gte: new Date(sYesterday),
-          lte: new Date(eYesterday),
+        _sum: {
+          totalPower: true,
         },
-      },
-      select: {
-        powerOriginal: {
-          select: { totalPower: true },
-        },
-        powerCurrent: {
-          select: { totalPower: true },
-        },
-      },
-    }),
-    prisma.dayPower.findMany({
-      where: {
-        ...powerFilter,
-        decAcknow: true,
-        disAcknow: true,
-        powerDate: {
-          gte: new Date(sMonth),
-          lte: new Date(eMonth),
-        },
-      },
-      select: {
-        powerOriginal: {
-          select: { totalPower: true },
-        },
-        powerCurrent: {
-          select: { totalPower: true },
-        },
-      },
-    }),
-  ]);
-
-  // รวมยอดแต่ละช่วงเวลา
-  const sumTotalPower = (data: PowerSumData[]) => {
-    let totalOriginal = new Decimal(0);
-    let totalCurrent = new Decimal(0);
-
-    for (const item of data) {
-      if (item.powerOriginal?.totalPower) {
-        totalOriginal = totalOriginal.plus(item.powerOriginal.totalPower);
-      }
-      if (item.powerCurrent?.totalPower) {
-        totalCurrent = totalCurrent.plus(item.powerCurrent.totalPower);
-      }
-    }
+      }),
+    ]);
 
     return {
-      totalOriginal: totalOriginal.toNumber(),
-      totalCurrent: totalCurrent.toNumber(),
+      totalOriginal: original._sum.totalPower?.toNumber() || 0,
+      totalCurrent: current._sum.totalPower?.toNumber() || 0,
     };
   };
 
+  // ดึงข้อมูลแต่ละช่วง
+  const yesterdayData = await getSum({
+    powerDate: { gte: startYesterday, lte: endYesterday },
+    decAcknow: true,
+    disAcknow: true,
+  });
+  const todayData = await getSum({
+    powerDate: { gte: startToday, lte: endToday },
+    decAcknow: true,
+    disAcknow: true,
+  });
+  const monthData = await getSum({
+    powerDate: { gte: startMonth, lte: endMonth },
+    decAcknow: true,
+    disAcknow: true,
+  });
+
   return {
-    yesterday: {
-      ...sumTotalPower(yesterdayData),
-      yesterdayStr: yesterdayStr,
-    },
-    today: {
-      ...sumTotalPower(todayData),
-      todayStr: todayStr,
-    },
-    month: {
-      ...sumTotalPower(monthData),
-      monthStr: monthStr,
-    },
+    yesterday: { ...yesterdayData, yesterdayStr },
+    today: { ...todayData, todayStr },
+    month: { ...monthData, monthStr },
   };
 }

@@ -1,13 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaService } from '../../../prisma/prisma.service';
 import * as moment from 'moment-timezone';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
-import { Decimal } from '@prisma/client/runtime/library';
-
-type PowerSumData = {
-  powerOriginal?: { totalPower: Decimal | null } | null;
-  powerCurrent?: { totalPower: Decimal | null } | null;
-};
-
 export async function totalPowerAll(prisma: PrismaService, user: AuthUser) {
   const timezone = 'Asia/Vientiane';
   const now = moment.tz(timezone);
@@ -19,87 +13,83 @@ export async function totalPowerAll(prisma: PrismaService, user: AuthUser) {
   const lastWeek = lastWeekMoment.isoWeek();
   const lastWeekYear = lastWeekMoment.isoWeekYear();
 
+  // labels
   const yearStr = String(currentWeekYear);
   const currentWeekStr = currentWeek;
   const lastWeekStr = lastWeek;
 
+  // filter ตาม role
   const powerFilter =
     user.roleId === 5 || user.roleId === 6
       ? { powerId: { in: user.powers } }
       : {};
 
-  const [lastWeekData, currentWeekData, yearData] = await Promise.all([
-    prisma.weekPower.findMany({
-      where: {
-        ...powerFilter,
-        decAcknow: true,
-        disAcknow: true,
-        sYear: String(lastWeekYear),
-        sWeek: String(lastWeek).padStart(2, '0'),
-      },
-      select: {
-        powerOriginal: { select: { totalPower: true } },
-        powerCurrent: { select: { totalPower: true } },
-      },
-    }),
-    prisma.weekPower.findMany({
-      where: {
-        ...powerFilter,
-        decAcknow: true,
-        disAcknow: true,
-        sYear: String(currentWeekYear),
-        sWeek: String(currentWeek).padStart(2, '0'),
-      },
-      select: {
-        powerOriginal: { select: { totalPower: true } },
-        powerCurrent: { select: { totalPower: true } },
-      },
-    }),
-    prisma.weekPower.findMany({
-      where: {
-        ...powerFilter,
-        decAcknow: true,
-        disAcknow: true,
-        sYear: String(currentWeekYear),
-      },
-      select: {
-        powerOriginal: { select: { totalPower: true } },
-        powerCurrent: { select: { totalPower: true } },
-      },
-    }),
-  ]);
-
-  const sumTotalPower = (data: PowerSumData[]) => {
-    let totalOriginal = new Decimal(0);
-    let totalCurrent = new Decimal(0);
-
-    for (const item of data) {
-      if (item.powerOriginal?.totalPower) {
-        totalOriginal = totalOriginal.plus(item.powerOriginal.totalPower);
-      }
-      if (item.powerCurrent?.totalPower) {
-        totalCurrent = totalCurrent.plus(item.powerCurrent.totalPower);
-      }
-    }
+  // helper aggregate
+  const getSum = async (whereWeekPower: any) => {
+    const [original, current] = await Promise.all([
+      prisma.weekOriginal.aggregate({
+        where: {
+          weekPower: {
+            ...powerFilter,
+            ...whereWeekPower,
+          },
+        },
+        _sum: {
+          totalPower: true,
+        },
+      }),
+      prisma.weekCurrent.aggregate({
+        where: {
+          weekPower: {
+            ...powerFilter,
+            ...whereWeekPower,
+          },
+        },
+        _sum: {
+          totalPower: true,
+        },
+      }),
+    ]);
 
     return {
-      totalOriginal: totalOriginal.toNumber(),
-      totalCurrent: totalCurrent.toNumber(),
+      totalOriginal: original._sum.totalPower?.toNumber() || 0,
+      totalCurrent: current._sum.totalPower?.toNumber() || 0,
     };
   };
 
+  // ดึงข้อมูลทีละช่วง
+  const lastWeekData = await getSum({
+    sYear: String(lastWeekYear),
+    sWeek: String(lastWeek).padStart(2, '0'),
+    decAcknow: true,
+    disAcknow: true,
+  });
+
+  const currentWeekData = await getSum({
+    sYear: String(currentWeekYear),
+    sWeek: String(currentWeek).padStart(2, '0'),
+    decAcknow: true,
+    disAcknow: true,
+  });
+
+  const yearData = await getSum({
+    sYear: String(currentWeekYear),
+    decAcknow: true,
+    disAcknow: true,
+  });
+
   return {
     lastWeek: {
-      ...sumTotalPower(lastWeekData),
-      lastWeekStr: lastWeekStr,
+      ...lastWeekData,
+      lastWeekStr,
     },
     currentWeek: {
-      ...sumTotalPower(currentWeekData),
-      currentWeekStr: currentWeekStr,
+      ...currentWeekData,
+      currentWeekStr,
     },
     year: {
-      ...sumTotalPower(yearData),
-      yearStr: yearStr,
+      ...yearData,
+      yearStr,
     },
   };
 }
